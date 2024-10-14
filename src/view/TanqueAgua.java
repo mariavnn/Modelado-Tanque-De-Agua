@@ -73,7 +73,7 @@ public class TanqueAgua extends javax.swing.JFrame {
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         TransmisorNivel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/transmisor-nivel-2.png"))); // NOI18N
-        getContentPane().add(TransmisorNivel, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 340, 150, 150));
+        getContentPane().add(TransmisorNivel, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 250, 150, 150));
 
         txtPorcentaje.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         txtPorcentaje.addActionListener(new java.awt.event.ActionListener() {
@@ -81,10 +81,10 @@ public class TanqueAgua extends javax.swing.JFrame {
                 txtPorcentajeActionPerformed(evt);
             }
         });
-        getContentPane().add(txtPorcentaje, new org.netbeans.lib.awtextra.AbsoluteConstraints(25, 200, 115, 70));
+        getContentPane().add(txtPorcentaje, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 140, 120, 70));
 
         ControladorDeNivel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/control-nivel.png"))); // NOI18N
-        getContentPane().add(ControladorDeNivel, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 190, -1, -1));
+        getContentPane().add(ControladorDeNivel, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 130, -1, -1));
 
         ColorValvula.setBackground(new java.awt.Color(255, 51, 51));
         ColorValvula.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -107,7 +107,7 @@ public class TanqueAgua extends javax.swing.JFrame {
         Tanque.setOrientation(1);
         Tanque.setToolTipText("");
         Tanque.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        getContentPane().add(Tanque, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 130, 469, 440));
+        getContentPane().add(Tanque, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 130, 210, 260));
         Tanque.setForeground(new Color(51, 204, 255)); // Color azul (agua)
         Tanque.setMinimum(0);
         Tanque.setMaximum(100);
@@ -118,11 +118,11 @@ public class TanqueAgua extends javax.swing.JFrame {
         Valvula.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/llave-de-cierre.png"))); // NOI18N
         getContentPane().add(Valvula, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 10, -1, 120));
         getContentPane().add(TuberiaValvula, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 40, 170, 20));
-        getContentPane().add(TuberiaControlNivel, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 50, 20, 300));
+        getContentPane().add(TuberiaControlNivel, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 50, 20, 210));
 
         Casa.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/casa.png"))); // NOI18N
-        getContentPane().add(Casa, new org.netbeans.lib.awtextra.AbsoluteConstraints(700, 370, -1, -1));
-        getContentPane().add(TuberiaTransmisorDeNivel, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 450, 40, 20));
+        getContentPane().add(Casa, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 250, -1, -1));
+        getContentPane().add(TuberiaTransmisorDeNivel, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 360, 40, 20));
 
         ButtonStart.setText("Iniciar Simulacion");
         ButtonStart.addActionListener(new java.awt.event.ActionListener() {
@@ -130,11 +130,11 @@ public class TanqueAgua extends javax.swing.JFrame {
                 ButtonStartActionPerformed(evt);
             }
         });
-        getContentPane().add(ButtonStart, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 50, 130, 40));
-        getContentPane().add(TuberiaCasa, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 470, 120, 20));
+        getContentPane().add(ButtonStart, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 30, 130, 40));
+        getContentPane().add(TuberiaCasa, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 360, 120, 20));
 
         Fondo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/fond2.png"))); // NOI18N
-        getContentPane().add(Fondo, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 840, 600));
+        getContentPane().add(Fondo, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 780, 470));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
