@@ -30,7 +30,8 @@ public class TanqueAgua extends javax.swing.JFrame {
         valvula = new Valvula();
         transmisorNivel = new TransmisorNivel();
         controlNivel = new ControlNivel(valvula);
-        tanqueController = new TanqueController(Tanque, TuberiaCasa, cableTnivel, cableTnivel2, TuberiaValvula, Valvula, txtPorcentaje, botonIniciar, ColorValvula);
+        tanqueController = new TanqueController(Tanque, TuberiaCasa, TuberiaValvula, Valvula, 
+                    txtPorcentaje, botonIniciar, ColorValvula, controlNivel, transmisorNivel, valvula);
         setLocationRelativeTo(null);
     }
 

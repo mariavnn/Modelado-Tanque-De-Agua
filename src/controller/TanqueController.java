@@ -4,13 +4,12 @@
  */
 package controller;
 
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JProgressBar;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
+import java.awt.*;
+
+import model.ControlNivel;
+import model.TransmisorNivel;
+import model.Valvula;
 
 public class TanqueController {
 
@@ -23,22 +22,27 @@ public class TanqueController {
     private JPanel ColorValvula;
     private boolean isRunning = false;
 
-    // Variables para almacenar el estado de progreso
+    // Variables de lógica del sistema
     private int progresoTanque = 0;
     private int progresoTuberia = 0;
+    private ControlNivel controlNivel;
+    private TransmisorNivel transmisorNivel;
+    private Valvula valvulaModel;
 
-    public TanqueController(JProgressBar Tanque, JProgressBar tuberiaCasa, JProgressBar TuberiaControlNivel,
-            JProgressBar TuberiaTransmisorDeNivel, JProgressBar TuberiaValvula, JLabel valvula,
-            JTextField txtPorcentaje, JButton btnIniciar, JPanel ColorValvula) {
-        this.tanque = Tanque;
+    public TanqueController(JProgressBar tanque, JProgressBar tuberiaCasa, JProgressBar TuberiaValvula,
+                            JLabel valvula, JTextField txtPorcentaje, JButton btnIniciar, JPanel ColorValvula,
+                            ControlNivel controlNivel, TransmisorNivel transmisorNivel, Valvula valvulaModel) {
+        this.tanque = tanque;
         this.tuberiaCasa = tuberiaCasa;
+        this.TuberiaValvula = TuberiaValvula;
         this.valvula = valvula;
         this.txtPorcentaje = txtPorcentaje;
         this.btnIniciar = btnIniciar;
         this.ColorValvula = ColorValvula;
-        this.TuberiaValvula = TuberiaValvula;
+        this.controlNivel = controlNivel;
+        this.transmisorNivel = transmisorNivel;
+        this.valvulaModel = valvulaModel;
 
-        // Deshabilitar el botón al iniciar la simulación
         btnIniciar.addActionListener(e -> iniciarSimulacion());
     }
 
@@ -52,72 +56,16 @@ public class TanqueController {
         // Hilo para el llenado del tanque
         new Thread(() -> {
             try {
-                //Tuberia Valvula
                 while (isRunning) {
-                    //Llenar
-                    for (progresoTuberia = progresoTuberia; progresoTuberia < 100; progresoTuberia++) {
-                        if (!isRunning) {
-                            return;
-                        }
-                        TuberiaValvula.setValue(progresoTuberia);
-                        Thread.sleep(1);
-                    }
-
-                    // Llenar el tanque hasta 100%
-                    for (progresoTanque = progresoTanque; progresoTanque <= 100; progresoTanque++) {
-                        if (!isRunning) {
-                            return;
-                        }
-                        actualizarTanque(progresoTanque);
-                        Thread.sleep(100);
-                    }
-
-                    // SEÑAL DEL TRANSMISOR DE CONTROL A LA VALVULA PARA CERRARSE 
-                    TuberiaValvula.setValue(0);
-
-                    // Cambiar color de la válvula a rojo
-                    SwingUtilities.invokeLater(() -> ColorValvula.setBackground(java.awt.Color.RED));
-
-                    // Vaciar el tanque de 100% a 0%
-                    for (int i = 100; i >= 0; i--) {
-                        if (!isRunning) {
-                            return;
-                        }
-                        actualizarTanque(i);
-                        tuberiaCasa.setValue(100); 
-                        Thread.sleep(100);
-
-                        if (i <= 60) {
-                            // Detener el vaciado
-                            tuberiaCasa.setValue(0);
-                            // Iniciar el llenado nuevamente desde el 60%
-                            llenarTanqueDesde60(60);
-                            break; // Salir del bucle de vaciado
-                        }
-
-                        Thread.sleep(100);
-                    }
+                    // Llenar el tanque
+                    llenarTanque();
+                    // Vaciar el tanque
+                    vaciarTanque();
                 }
-                tuberiaCasa.setValue(0);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } finally {
-                isRunning = false; // Permitir reiniciar la simulación
-            }
-        }).start();
-
-        // Hilo para simular el estado de la válvula
-        new Thread(() -> {
-            SwingUtilities.invokeLater(() -> ColorValvula.setBackground(java.awt.Color.GREEN)); // Cambiar a verde
-            try {
-                for (int i = 0; i < 100; i++) {
-                    if (!isRunning) {
-                        return;
-                    }
-                    Thread.sleep(1);
-                }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+                isRunning = false;  // Permitir reiniciar la simulación
             }
         }).start();
     }
@@ -127,31 +75,70 @@ public class TanqueController {
     }
 
     private void estadoInicio() {
-        
-
+        // Iniciar la válvula cerrada y tanque vacío
+        valvulaModel.abrir(0);
+        tanque.setValue(0);
+        tuberiaCasa.setValue(0);
     }
 
-    private void llenarTanqueDesde60(int inicioDesde) {
-        new Thread(() -> {
-        try {
-            for (progresoTanque = inicioDesde; progresoTanque <= 100; progresoTanque++) {
-                if (!isRunning) {
-                    return; // Verificar si se debe detener
-                }
-                // Actualizar el tanque y el porcentaje en el hilo de eventos de Swing
-                SwingUtilities.invokeLater(() -> actualizarTanque(progresoTanque));
-                Thread.sleep(100); // Tiempo de llenado
-            }
-            // Mensaje de llenado exitoso
-            SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(null, "Tanque Llenado Exitosamente"));
-        } catch (InterruptedException e) {
-            e.printStackTrace(); // Manejar la excepción de interrupción
+    private void llenarTanque() throws InterruptedException {
+        for (progresoTanque = 0; progresoTanque <= 100; progresoTanque++) {
+            if (!isRunning) return;
+
+            // Simular medición del transmisor
+            transmisorNivel.setNivelAgua(progresoTanque / 100.0);
+            controlNivel.verificarNivel(transmisorNivel.medirNivel());
+
+            // Actualizar interfaz gráfica
+            actualizarTanque(progresoTanque);
+            Thread.sleep(100);
         }
-    }).start();
+    }
+
+    private void vaciarTanque() throws InterruptedException {
+        for (int i = 100; i >= 0; i--) {
+            if (!isRunning) return;
+
+            // Simular vaciado del tanque y tubería a la casa
+            actualizarTanque(i);
+            tuberiaCasa.setValue(100);  // Simular la entrada de agua hacia la casa
+
+            if (i <= 60) {
+                tuberiaCasa.setValue(0);
+                // Volver a llenar el tanque desde el 60%
+                llenarTanqueDesde60(60);
+                break;
+            }
+
+            Thread.sleep(100);
+        }
+    }
+
+    private void llenarTanqueDesde60(int inicioDesde) throws InterruptedException {
+        for (progresoTanque = inicioDesde; progresoTanque <= 100; progresoTanque++) {
+            if (!isRunning) return;
+
+            transmisorNivel.setNivelAgua(progresoTanque / 100.0);
+            controlNivel.verificarNivel(transmisorNivel.medirNivel());
+            actualizarTanque(progresoTanque);
+
+            Thread.sleep(100);
+        }
     }
 
     private void actualizarTanque(int nivel) {
         tanque.setValue(nivel);
         txtPorcentaje.setText(nivel + "%");
+
+        // Actualizar color de la válvula dependiendo de su estado
+        SwingUtilities.invokeLater(() -> {
+            if (valvulaModel.getApertura() == 100) {
+                ColorValvula.setBackground(Color.GREEN);
+            } else if (valvulaModel.getApertura() > 0) {
+                ColorValvula.setBackground(Color.YELLOW);
+            } else {
+                ColorValvula.setBackground(Color.RED);
+            }
+        });
     }
 }

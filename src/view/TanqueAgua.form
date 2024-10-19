@@ -185,7 +185,6 @@
     <Component class="javax.swing.JButton" name="botonIniciar">
       <Properties>
         <Property name="text" type="java.lang.String" value="INICIAR"/>
-        <Property name="actionCommand" type="java.lang.String" value="INICIAR"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="botonIniciarActionPerformed"/>
