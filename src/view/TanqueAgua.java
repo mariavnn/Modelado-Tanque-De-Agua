@@ -157,7 +157,7 @@ public class TanqueAgua extends javax.swing.JFrame {
         getContentPane().add(CerrarValvula, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 60, -1, -1));
 
         AbrirValvula.setText("Abrir Valvula");
-        getContentPane().add(AbrirValvula, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 20, 100, -1));
+        getContentPane().add(AbrirValvula, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 20, 110, -1));
         getContentPane().add(TuberiaCasa, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 380, 120, 20));
 
         Fondo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/fond2.png"))); // NOI18N

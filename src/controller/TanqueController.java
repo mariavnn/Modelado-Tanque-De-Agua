@@ -7,6 +7,8 @@ import java.awt.Color;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import model.ControlNivel;
 import model.TransmisorNivel;
 import model.Valvula;
@@ -28,6 +30,9 @@ public class TanqueController {
 
     // Variables de lógica del sistema
     private int progresoTanque = 0;
+    private boolean valvulaAbierta;
+    private boolean vaciandoTanque = false;
+    private boolean llenandoTanque = false;
     private ControlNivel controlNivel;
     private TransmisorNivel transmisorNivel;
     private Valvula valvulaModel;
@@ -66,6 +71,10 @@ public class TanqueController {
     
     public void detenerSimulacion() {
         isRunning = false;
+        llenandoTanque = false;  // Detener cualquier proceso de llenado en curso
+        vaciandoTanque = false;  // Detener cualquier proceso de vaciado en curso
+        valvulaAbierta = false;  // Cerrar la válvula para evitar llenado
+        System.out.println("Simulación detenida.");
     }
 
     public void iniciarSimulacion() {
@@ -79,39 +88,46 @@ public class TanqueController {
         new Thread(() -> {
             try {
                 while (isRunning) {
-                if (modoAutomatico.isSelected()) {
-                    // Llenar el tanque por primera vez
-                    System.out.println("LLENADO DEL TANQUE DESDE 0");
-                    llenarTanque();
+                    if (modoAutomatico.isSelected()) {
+                        // Llenar el tanque por primera vez
+                        System.out.println("LLENADO DEL TANQUE DESDE 0");
+                        valvulaAbierta = true;
+                        llenarTanque();
+                        
 
-                    // Comenzar el ciclo de llenado y vaciado
-                    while (isRunning) {
-                        // Si el tanque está lleno, empezar a pasar agua a la casa
-                        if (progresoTanque >= 100) {
-                            // Pasar agua a la casa hasta que el tanque baje a 60
-                            while (isRunning && progresoTanque > 60) {
-                                tuberiaCasa.setValue(100); // Simular el flujo de agua hacia la casa
-                                progresoTanque--; // Reducir el nivel del tanque
-                                System.out.println("PRIMER VACIADO DEL TANQUE");
-                                actualizarTanque(progresoTanque); // Actualizar la interfaz gráfica
-                                Thread.sleep(100); // Esperar un momento para simular el flujo
+                        // Comenzar el ciclo de llenado y vaciado
+                        while (isRunning && modoAutomatico.isSelected()) {
+                            // Si el tanque está lleno, empezar a pasar agua a la casa
+                            if (progresoTanque >= 100) {
+                                // Pasar agua a la casa hasta que el tanque baje a 60
+                                vaciarTanque();
                             }
-                            tuberiaCasa.setValue(0); // Detener el flujo hacia la casa cuando el tanque esté en 60
-                            System.out.println("VACIADO DEL TANQUE A 60");
-                        }
 
-                        // Si el tanque llega a 60, comenzar a llenar desde 60 hasta 100
-                        if (progresoTanque <= 60) {
-                            System.out.println("DENTRO DEL BUCLE DE 60 A 100");
-                            while (isRunning && progresoTanque < 100) {
-                                llenarTanqueDesde60(); // Llenar de 60 a 100
+                            // Si el tanque llega a 60, comenzar a llenar desde 60 hasta 100
+                            if (progresoTanque <= 60) {
+                                System.out.println("DENTRO DEL BUCLE DE 60 A 100");
+                                while (isRunning && progresoTanque < 100) {
+                                    valvulaAbierta = false;
+                                    llenarTanqueDesde60(); // Llenar de 60 a 100
+                                }
                             }
                         }
+                    } else if (modoManual.isSelected()) {
+                        System.out.println("VALVULA ABIERTA " + valvulaAbierta);
+                        // Lógica para el modo manual
+                        System.out.println("LOGICA PARA EL MODO MANUAL");
+                        if (valvulaAbierta) {
+                            System.out.println("LLENAR TANQUE MANUALMENTE if");
+                            llenarTanqueManualmente();
+                            
+                        }else{
+                            System.out.println("VACIAR TANQUE MANUALMENTE if");
+                            vaciarTanqueManual();
+                        }
+                    }else{
+                        System.out.println("SELECCIONA UN MODO ");
                     }
-                } else {
-                    vaciarTanqueManual();
                 }
-            }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } finally {
@@ -124,23 +140,40 @@ public class TanqueController {
         modoManual.setSelected(false);
         AbrirValvula.setEnabled(false);
         CerrarValvula.setEnabled(false);
+        detenerSimulacion(); // Detener la simulación si está corriendo
     }
 
     private void activarModoManual() {
         modoAutomatico.setSelected(false);
         AbrirValvula.setEnabled(true);
         CerrarValvula.setEnabled(true);
+        detenerSimulacion(); // Detener la simulación si está corriendo
     }
 
-    private void abrirValvula() {
-        valvulaModel.abrir(100); // Abrir la válvula completamente
-        ColorValvula.setBackground(Color.GREEN);
-        llenarTanqueManualmente();
+    private synchronized void abrirValvula() {
+    System.out.println("ABRIR VALVULA");
+    valvulaAbierta = true;
+    valvulaModel.abrir(100); // Abrir la válvula completamente
+    ColorValvula.setBackground(Color.GREEN);
+    
+    if (modoManual.isSelected()) {
+        // Detener cualquier proceso de vaciado antes de empezar a llenar
+        vaciandoTanque = false;
+        llenarTanqueManualmente(); // Iniciar el llenado manual
     }
+}
 
-    private void cerrarValvula() {
+    private synchronized void cerrarValvula() {
+        System.out.println("CERRAR VALVULA");
+        valvulaAbierta = false;
         valvulaModel.abrir(0); // Cerrar la válvula
         ColorValvula.setBackground(Color.RED);
+
+        if (modoManual.isSelected()) {
+            // Detener cualquier proceso de llenado antes de empezar a vaciar
+            llenandoTanque = false;
+            vaciarTanqueManual(); // Iniciar el vaciado manual
+        }
     }
 
     private void estadoInicio() {
@@ -151,7 +184,7 @@ public class TanqueController {
     }
 
     private void llenarTanque() throws InterruptedException {
-        System.out.println(progresoTanque);
+        System.out.println("LLENAR TANQUE " + progresoTanque);
         for (progresoTanque = 0; progresoTanque <= 100; progresoTanque++) {
             if (!isRunning || !modoAutomatico.isSelected()) return;
 
@@ -167,7 +200,7 @@ public class TanqueController {
     
     private void llenarTanqueDesde60() throws InterruptedException {
     // Llenar el tanque desde 60 hasta 100
-    System.out.println(progresoTanque);
+    System.out.println("LLENAR TANQUE DESDE 60"+ progresoTanque);
     for (progresoTanque = 60; progresoTanque <= 100; progresoTanque++) {
         if (!isRunning || !modoAutomatico.isSelected()) return;
 
@@ -182,50 +215,119 @@ public class TanqueController {
 }
 
     private void vaciarTanque() throws InterruptedException {
-        for (int i = 100; i >= 0; i--) {
-            if (!isRunning || !modoAutomatico.isSelected()) return;
-
-            // Simular vaciado del tanque y tubería a la casa
-            actualizarTanque(i);
-            tuberiaCasa.setValue(100);  // Simular la entrada de agua hacia la casa
-
-            if (i <= 60) {
-                tuberiaCasa.setValue(0);
-                // Volver a llenar el tanque desde el 60%
-                
-                break;
-            }
-
-            Thread.sleep(100);
+        while (isRunning && progresoTanque > 60) {
+            valvulaAbierta = false;
+            tuberiaCasa.setValue(100); // Simular el flujo de agua hacia la casa
+            progresoTanque--; // Reducir el nivel del tanque
+            
+            System.out.println("PRIMER VACIADO DEL TANQUE");
+            actualizarTanque(progresoTanque); // Actualizar la interfaz gráfica
+            Thread.sleep(100); // Esperar un momento para simular el flujo
         }
+        
+        tuberiaCasa.setValue(0); // Detener el flujo hacia la casa cuando el tanque esté en 60
+        System.out.println("VACIADO DEL TANQUE A 60");
     }
 
-    private void llenarTanqueManualmente() {
-        // Método que se llama al abrir la válvula en modo manual
+
+    
+    //ARREGLOS LOS HILOS PARA QUE NO HAGAN INTERFERENCIA
+    private synchronized void llenarTanqueManualmente() {
+        // Verificar si ya se está llenando el tanque o si se está vaciando
+        if (llenandoTanque || vaciandoTanque) {
+            System.out.println("Otro proceso ya está en curso.");
+            return; // Salir si ya hay un proceso activo
+        }
+
+        // Marcar que el llenado está en curso
+        llenandoTanque = true;
+        vaciandoTanque = false; // Asegurarse de que no se está vaciando
+
+        System.out.println("Iniciando llenado del tanque...");
+
+        // Crear un hilo para realizar el llenado continuo
         new Thread(() -> {
-            try {
-                while (isRunning && modoManual.isSelected() && progresoTanque < 100) {
-                    progresoTanque++;
-                    transmisorNivel.setNivelAgua(progresoTanque / 100.0);
-                    controlNivel.verificarNivel(transmisorNivel.medirNivel());
-                    actualizarTanque(progresoTanque);
-                    Thread.sleep(100);
+            while (valvulaAbierta && progresoTanque < 100 && llenandoTanque) {
+                // Aumentar el progreso del tanque
+                progresoTanque++;
+                System.out.println("LLENAR TANQUE MANUALMENTE: Progreso = " + progresoTanque);
+
+                // Simular llenado
+                transmisorNivel.setNivelAgua(progresoTanque / 100.0);
+                controlNivel.verificarNivel(transmisorNivel.medirNivel());
+                actualizarTanque(progresoTanque);
+
+                // Verificar si el tanque está lleno
+                if (progresoTanque >= 100) {
+                    System.out.println("Tanque lleno.");
+                    valvulaAbierta = false; // Detener el llenado
                 }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+
+                // Pausar brevemente para simular el llenado gradual
+                try {
+                    Thread.sleep(100); // Pausa de 100ms para simular el tiempo de llenado
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            // Finalizar el proceso de llenado si se completa o si se cierra la válvula
+            llenandoTanque = false; // Marcar que el llenado ha finalizado
+
+            // Mensaje final si la válvula se cierra
+            if (!valvulaAbierta) {
+                System.out.println("La válvula se cerró. Deteniendo el llenado.");
             }
         }).start();
     }
 
-    private void vaciarTanqueManual() throws InterruptedException {
-        // Simular vaciado del tanque en modo manual
-        if (progresoTanque > 0) {
-            progresoTanque--;
-            actualizarTanque(progresoTanque);
-            tuberiaCasa.setValue(100);  // Simular la entrada de agua hacia la casa
-            Thread.sleep(100);
+    private synchronized void vaciarTanqueManual() {
+        // Verificar si ya se está vaciando el tanque o si se está llenando
+        if (vaciandoTanque || llenandoTanque) {
+            System.out.println("Otro proceso ya está en curso.");
+            return; // Salir si ya hay un proceso activo
         }
+
+        // Marcar que el vaciado está en curso
+        vaciandoTanque = true;
+        llenandoTanque = false; // Asegurarse de que no se está llenando
+
+        System.out.println("Iniciando vaciado del tanque...");
+
+        // Crear un hilo para realizar el vaciado continuo
+        new Thread(() -> {
+            while (progresoTanque > 0 && vaciandoTanque) {
+                // Reducir el progreso del tanque
+                progresoTanque--;
+                System.out.println("VACIAR TANQUE MANUALMENTE: Progreso = " + progresoTanque);
+
+                // Simular el vaciado hacia la casa
+                tuberiaCasa.setValue(100);  // Simular el flujo de agua hacia la casa
+                actualizarTanque(progresoTanque); // Actualizar la interfaz gráfica
+
+                // Verificar si el tanque está completamente vacío
+                if (progresoTanque <= 0) {
+                    System.out.println("El tanque está vacío.");
+                    tuberiaCasa.setValue(0); // Detener el flujo de agua hacia la casa
+                    vaciandoTanque = false;  // Marcar que el vaciado ha terminado
+                }
+
+                // Pausar brevemente para simular el vaciado gradual
+                try {
+                    Thread.sleep(100); // Pausa de 100ms para simular el tiempo de vaciado
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            // Mensaje final cuando el tanque se vacía completamente
+            if (progresoTanque <= 0) {
+                System.out.println("El tanque ya está completamente vacío.");
+                tuberiaCasa.setValue(0); // Asegurarse de detener el flujo de agua hacia la casa
+            }
+        }).start();
     }
+
 
     private void actualizarTanque(int nivel) {
         tanque.setValue(nivel);
