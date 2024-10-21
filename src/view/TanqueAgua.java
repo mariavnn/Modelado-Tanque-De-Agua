@@ -4,6 +4,7 @@
  */
 package view;
 
+
 import controller.TanqueController;
 import java.awt.Color;
 import javax.swing.Timer;
@@ -30,8 +31,7 @@ public class TanqueAgua extends javax.swing.JFrame {
         valvula = new Valvula();
         transmisorNivel = new TransmisorNivel();
         controlNivel = new ControlNivel(valvula);
-        tanqueController = new TanqueController(Tanque, TuberiaCasa, TuberiaValvula, Valvula, 
-                    txtPorcentaje, botonIniciar, ColorValvula, controlNivel, transmisorNivel, valvula);
+        tanqueController = new TanqueController(  Tanque, TuberiaCasa, TuberiaValvula, Valvula, txtPorcentaje, botonIniciar, AbrirValvula, CerrarValvula, ColorValvula, modoAutomatico, modoManual, controlNivel, transmisorNivel, valvula);
         setLocationRelativeTo(null);
     }
 
@@ -52,10 +52,14 @@ public class TanqueAgua extends javax.swing.JFrame {
         cableTnivel2 = new javax.swing.JProgressBar();
         cableTnivel = new javax.swing.JProgressBar();
         Valvula = new javax.swing.JLabel();
+        modoAutomatico = new javax.swing.JRadioButton();
         Casa = new javax.swing.JLabel();
+        modoManual = new javax.swing.JRadioButton();
         TuberiaValvula = new javax.swing.JProgressBar();
         botonIniciar = new javax.swing.JButton();
         botonDetener = new javax.swing.JButton();
+        CerrarValvula = new javax.swing.JButton();
+        AbrirValvula = new javax.swing.JButton();
         TuberiaCasa = new javax.swing.JProgressBar();
         Fondo = new javax.swing.JLabel();
 
@@ -123,18 +127,23 @@ public class TanqueAgua extends javax.swing.JFrame {
         Valvula.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/llave-de-cierre.png"))); // NOI18N
         getContentPane().add(Valvula, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 20, -1, 120));
 
+        modoAutomatico.setText("Automatico");
+        getContentPane().add(modoAutomatico, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 140, -1, -1));
+
         Casa.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/casa.png"))); // NOI18N
         getContentPane().add(Casa, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 280, 130, 130));
+
+        modoManual.setText("Manual");
+        getContentPane().add(modoManual, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 170, 90, -1));
         getContentPane().add(TuberiaValvula, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 50, 120, 20));
 
         botonIniciar.setText("INICIAR");
-        botonIniciar.setActionCommand("INICIAR");
         botonIniciar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 botonIniciarActionPerformed(evt);
             }
         });
-        getContentPane().add(botonIniciar, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 30, 130, 40));
+        getContentPane().add(botonIniciar, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 30, 110, 30));
 
         botonDetener.setText("DETENER");
         botonDetener.addActionListener(new java.awt.event.ActionListener() {
@@ -142,7 +151,13 @@ public class TanqueAgua extends javax.swing.JFrame {
                 botonDetenerActionPerformed(evt);
             }
         });
-        getContentPane().add(botonDetener, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 90, 130, 40));
+        getContentPane().add(botonDetener, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 80, 110, 30));
+
+        CerrarValvula.setText("CerrarValvula");
+        getContentPane().add(CerrarValvula, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 60, -1, -1));
+
+        AbrirValvula.setText("Abrir Valvula");
+        getContentPane().add(AbrirValvula, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 20, 100, -1));
         getContentPane().add(TuberiaCasa, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 380, 120, 20));
 
         Fondo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/fond2.png"))); // NOI18N
@@ -202,7 +217,9 @@ public class TanqueAgua extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton AbrirValvula;
     private javax.swing.JLabel Casa;
+    private javax.swing.JButton CerrarValvula;
     private javax.swing.JPanel ColorValvula;
     private javax.swing.JLabel Fondo;
     private javax.swing.JProgressBar Tanque;
@@ -215,6 +232,8 @@ public class TanqueAgua extends javax.swing.JFrame {
     private javax.swing.JProgressBar cableTnivel2;
     private javax.swing.JLabel controlador;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JRadioButton modoAutomatico;
+    private javax.swing.JRadioButton modoManual;
     private javax.swing.JTextField txtPorcentaje;
     // End of variables declaration//GEN-END:variables
 }
