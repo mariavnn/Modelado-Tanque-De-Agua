@@ -70,10 +70,15 @@ public class TanqueController {
     }
     
     public void detenerSimulacion() {
+        progresoTanque = 0;
+        actualizarTanque(progresoTanque);
+        
         isRunning = false;
         llenandoTanque = false;  // Detener cualquier proceso de llenado en curso
         vaciandoTanque = false;  // Detener cualquier proceso de vaciado en curso
         valvulaAbierta = false;  // Cerrar la válvula para evitar llenado
+        AbrirValvula.setEnabled(false);
+        CerrarValvula.setEnabled(false);
         System.out.println("Simulación detenida.");
     }
 
@@ -98,17 +103,17 @@ public class TanqueController {
                         // Comenzar el ciclo de llenado y vaciado
                         while (isRunning && modoAutomatico.isSelected()) {
                             // Si el tanque está lleno, empezar a pasar agua a la casa
-                            if (progresoTanque >= 100) {
+                            if (progresoTanque >= 100 || progresoTanque >= 80) {
                                 // Pasar agua a la casa hasta que el tanque baje a 60
                                 vaciarTanque();
                             }
 
-                            // Si el tanque llega a 60, comenzar a llenar desde 60 hasta 100
+                            // Si el tanque llega a 60, comenzar a llenar desde 60 hasta 80
                             if (progresoTanque <= 60) {
-                                System.out.println("DENTRO DEL BUCLE DE 60 A 100");
-                                while (isRunning && progresoTanque < 100) {
+                                System.out.println("DENTRO DEL BUCLE DE 60 A 80");
+                                while (isRunning && progresoTanque < 80) {
                                     valvulaAbierta = false;
-                                    llenarTanqueDesde60(); // Llenar de 60 a 100
+                                    llenarTanqueDesde60(); // Llenar de 60 a 80
                                 }
                             }
                         }
@@ -147,7 +152,6 @@ public class TanqueController {
         modoAutomatico.setSelected(false);
         AbrirValvula.setEnabled(true);
         CerrarValvula.setEnabled(true);
-        detenerSimulacion(); // Detener la simulación si está corriendo
     }
 
     private synchronized void abrirValvula() {
@@ -199,9 +203,9 @@ public class TanqueController {
     }
     
     private void llenarTanqueDesde60() throws InterruptedException {
-    // Llenar el tanque desde 60 hasta 100
+    // Llenar el tanque desde 60 hasta 80
     System.out.println("LLENAR TANQUE DESDE 60"+ progresoTanque);
-    for (progresoTanque = 60; progresoTanque <= 100; progresoTanque++) {
+    for (progresoTanque = 60; progresoTanque <= 80; progresoTanque++) {
         if (!isRunning || !modoAutomatico.isSelected()) return;
 
         // Simular medición del transmisor
@@ -335,11 +339,9 @@ public class TanqueController {
 
         // Actualizar color de la válvula dependiendo de su estado
         SwingUtilities.invokeLater(() -> {
-            if (valvulaModel.getApertura() == 100) {
+            if (valvulaModel.getApertura() > 0) {
                 ColorValvula.setBackground(Color.GREEN);
-            } else if (valvulaModel.getApertura() > 0) {
-                ColorValvula.setBackground(Color.YELLOW);
-            } else {
+            } else{
                 ColorValvula.setBackground(Color.RED);
             }
         });
