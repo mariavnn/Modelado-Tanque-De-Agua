@@ -31,7 +31,11 @@ public class TanqueAgua extends javax.swing.JFrame {
         valvula = new Valvula();
         transmisorNivel = new TransmisorNivel();
         controlNivel = new ControlNivel(valvula);
-        tanqueController = new TanqueController(  Tanque, TuberiaCasa, TuberiaValvula, Valvula, txtPorcentaje, botonIniciar, AbrirValvula, CerrarValvula, ColorValvula, modoAutomatico, modoManual, controlNivel, transmisorNivel, valvula);
+        tanqueController = new TanqueController(  Tanque, TuberiaCasa, TuberiaValvula, Valvula, 
+                txtPorcentaje, porcentajeValvula, porcentajeValvulaCasa,
+                botonIniciar, AbrirValvula, CerrarValvula, ColorValvula, 
+                ColorValvulaCasa, modoAutomatico, modoManual, controlNivel, 
+                transmisorNivel, valvula);
         setLocationRelativeTo(null);
     }
 
@@ -45,11 +49,15 @@ public class TanqueAgua extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
         controlador = new javax.swing.JLabel();
         txtPorcentaje = new javax.swing.JTextField();
         ColorValvula = new javax.swing.JPanel();
+        porcentajeValvula = new javax.swing.JTextField();
         Tanque = new javax.swing.JProgressBar();
         cableTnivel2 = new javax.swing.JProgressBar();
+        ColorValvulaCasa = new javax.swing.JPanel();
+        porcentajeValvulaCasa = new javax.swing.JTextField();
         cableTnivel = new javax.swing.JProgressBar();
         Valvula = new javax.swing.JLabel();
         modoAutomatico = new javax.swing.JRadioButton();
@@ -60,6 +68,7 @@ public class TanqueAgua extends javax.swing.JFrame {
         botonDetener = new javax.swing.JButton();
         CerrarValvula = new javax.swing.JButton();
         AbrirValvula = new javax.swing.JButton();
+        ValvulaCasa = new javax.swing.JLabel();
         TuberiaCasa = new javax.swing.JProgressBar();
         Fondo = new javax.swing.JLabel();
 
@@ -73,6 +82,8 @@ public class TanqueAgua extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 100, Short.MAX_VALUE)
         );
+
+        jLabel1.setText("jLabel1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("ventana");
@@ -92,15 +103,27 @@ public class TanqueAgua extends javax.swing.JFrame {
         ColorValvula.setBackground(new java.awt.Color(255, 51, 51));
         ColorValvula.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
+        porcentajeValvula.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        porcentajeValvula.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                porcentajeValvulaActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout ColorValvulaLayout = new javax.swing.GroupLayout(ColorValvula);
         ColorValvula.setLayout(ColorValvulaLayout);
         ColorValvulaLayout.setHorizontalGroup(
             ColorValvulaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ColorValvulaLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(porcentajeValvula, javax.swing.GroupLayout.PREFERRED_SIZE, 44, Short.MAX_VALUE)
+                .addContainerGap())
         );
         ColorValvulaLayout.setVerticalGroup(
             ColorValvulaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGroup(ColorValvulaLayout.createSequentialGroup()
+                .addComponent(porcentajeValvula, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 6, Short.MAX_VALUE))
         );
 
         getContentPane().add(ColorValvula, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 40, 60, 40));
@@ -121,6 +144,34 @@ public class TanqueAgua extends javax.swing.JFrame {
         cableTnivel2.setBackground(new java.awt.Color(0, 0, 0));
         getContentPane().add(cableTnivel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 70, 10, 220));
 
+        ColorValvulaCasa.setBackground(new java.awt.Color(255, 51, 51));
+        ColorValvulaCasa.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+
+        porcentajeValvulaCasa.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        porcentajeValvulaCasa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                porcentajeValvulaCasaActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout ColorValvulaCasaLayout = new javax.swing.GroupLayout(ColorValvulaCasa);
+        ColorValvulaCasa.setLayout(ColorValvulaCasaLayout);
+        ColorValvulaCasaLayout.setHorizontalGroup(
+            ColorValvulaCasaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ColorValvulaCasaLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(porcentajeValvulaCasa, javax.swing.GroupLayout.PREFERRED_SIZE, 44, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        ColorValvulaCasaLayout.setVerticalGroup(
+            ColorValvulaCasaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(ColorValvulaCasaLayout.createSequentialGroup()
+                .addComponent(porcentajeValvulaCasa, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 6, Short.MAX_VALUE))
+        );
+
+        getContentPane().add(ColorValvulaCasa, new org.netbeans.lib.awtextra.AbsoluteConstraints(382, 377, 60, 40));
+
         cableTnivel.setBackground(new java.awt.Color(0, 0, 0));
         getContentPane().add(cableTnivel, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 280, -1, 10));
 
@@ -131,7 +182,7 @@ public class TanqueAgua extends javax.swing.JFrame {
         getContentPane().add(modoAutomatico, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 140, -1, -1));
 
         Casa.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/casa.png"))); // NOI18N
-        getContentPane().add(Casa, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 280, 130, 130));
+        getContentPane().add(Casa, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 280, 130, 130));
 
         modoManual.setText("Manual");
         getContentPane().add(modoManual, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 170, 90, -1));
@@ -153,15 +204,20 @@ public class TanqueAgua extends javax.swing.JFrame {
         });
         getContentPane().add(botonDetener, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 80, 110, 30));
 
-        CerrarValvula.setText("CerrarValvula");
-        getContentPane().add(CerrarValvula, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 60, -1, -1));
+        CerrarValvula.setText("Cerrar Valvula");
+        getContentPane().add(CerrarValvula, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 60, 120, -1));
 
         AbrirValvula.setText("Abrir Valvula");
-        getContentPane().add(AbrirValvula, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 20, 110, -1));
-        getContentPane().add(TuberiaCasa, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 380, 120, 20));
+        getContentPane().add(AbrirValvula, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 20, 120, -1));
+
+        ValvulaCasa.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/valvulaCasa.png"))); // NOI18N
+        getContentPane().add(ValvulaCasa, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 340, 110, 80));
+
+        TuberiaCasa.setForeground(new java.awt.Color(0, 153, 255));
+        getContentPane().add(TuberiaCasa, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 380, 60, 30));
 
         Fondo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/fond2.png"))); // NOI18N
-        getContentPane().add(Fondo, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 660, 470));
+        getContentPane().add(Fondo, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -30, 660, 470));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -180,6 +236,14 @@ public class TanqueAgua extends javax.swing.JFrame {
         // TODO add your handling code here:
         tanqueController.detenerSimulacion();
     }//GEN-LAST:event_botonDetenerActionPerformed
+
+    private void porcentajeValvulaCasaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_porcentajeValvulaCasaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_porcentajeValvulaCasaActionPerformed
+
+    private void porcentajeValvulaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_porcentajeValvulaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_porcentajeValvulaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -221,19 +285,24 @@ public class TanqueAgua extends javax.swing.JFrame {
     private javax.swing.JLabel Casa;
     private javax.swing.JButton CerrarValvula;
     private javax.swing.JPanel ColorValvula;
+    private javax.swing.JPanel ColorValvulaCasa;
     private javax.swing.JLabel Fondo;
     private javax.swing.JProgressBar Tanque;
     private javax.swing.JProgressBar TuberiaCasa;
     private javax.swing.JProgressBar TuberiaValvula;
     private javax.swing.JLabel Valvula;
+    private javax.swing.JLabel ValvulaCasa;
     private javax.swing.JButton botonDetener;
     private javax.swing.JButton botonIniciar;
     private javax.swing.JProgressBar cableTnivel;
     private javax.swing.JProgressBar cableTnivel2;
     private javax.swing.JLabel controlador;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JRadioButton modoAutomatico;
     private javax.swing.JRadioButton modoManual;
+    private javax.swing.JTextField porcentajeValvula;
+    private javax.swing.JTextField porcentajeValvulaCasa;
     private javax.swing.JTextField txtPorcentaje;
     // End of variables declaration//GEN-END:variables
 }
