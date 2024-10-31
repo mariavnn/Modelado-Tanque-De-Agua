@@ -83,10 +83,16 @@ public class TanqueController {
         progresoTanque = 0;
         actualizarTanque(progresoTanque);
         
+        
         isRunning = false;
         llenandoTanque = false;  // Detener cualquier proceso de llenado en curso
         vaciandoTanque = false;  // Detener cualquier proceso de vaciado en curso
         valvulaAbierta = false;  // Cerrar la válvula para evitar llenado
+        
+        porcentajeValvulaCasa.setText("0%");
+        porcentajeValvula.setText("0%");
+        ColorValvulaCasa.setBackground(Color.RED);
+        tuberiaCasa.setValue(0);
         
         if(modoManual.isSelected()){
             AbrirValvula.setEnabled(true);
@@ -246,7 +252,7 @@ public class TanqueController {
         System.out.println("LLENAR TANQUE DESDE 60"+ progresoTanque);
         for (progresoTanque = 60; progresoTanque <= 80; progresoTanque++) {
             if (!isRunning || !modoAutomatico.isSelected()) return;
-                porcentajeValvula.setText("50%"); //La valvula esta abierta a un 50%
+                porcentajeValvula.setText("60%"); //La valvula esta abierta a un 50%
                 valvulaAbierta = true;
                 
                 // Simular medición del transmisor
@@ -262,7 +268,7 @@ public class TanqueController {
 
     private void vaciarTanque() throws InterruptedException {
         while (isRunning && progresoTanque > 60) {
-            porcentajeValvula.setText("0%"); //La valvula esta abierta a un 50%
+            porcentajeValvula.setText("40%"); //La valvula esta abierta a un 50%
             valvulaAbierta = false;
             progresoTanque--; // Reducir el nivel del tanque
             
@@ -291,8 +297,7 @@ public class TanqueController {
         new Thread(() -> {
             while (valvulaAbierta && progresoTanque < 100 && llenandoTanque) {
                 // Aumentar el progreso del tanque
-                porcentajeValvula.setText("100%");//La valvula se encuentra abierta un 100%
-                porcentajeValvulaCasa.setText("0%");
+                porcentajeValvula.setText("100%"); //La valvula se encuentra abierta un 100% 
                 progresoTanque++;
                 System.out.println("LLENAR TANQUE MANUALMENTE: Progreso = " + progresoTanque);
 
@@ -386,7 +391,6 @@ public class TanqueController {
                 ColorValvula.setBackground(Color.GREEN);
             } else{
                 ColorValvula.setBackground(Color.RED);
-                porcentajeValvula.setText("0%"); 
             }
         });
     }
