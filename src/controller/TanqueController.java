@@ -71,12 +71,21 @@ public class TanqueController {
         btnIniciar.addActionListener(e -> iniciarSimulacion());
         
         // Listeners para los JRadioButton
-        modoAutomatico.addActionListener(e -> activarModoAutomatico());
-        modoManual.addActionListener(e -> activarModoManual());
+        modoAutomatico.addActionListener(e -> activarModo(true));
+        modoManual.addActionListener(e -> activarModo(false));
         
         // Listeners para los botones de válvula
         AbrirValvula.addActionListener(e -> abrirValvula());
         CerrarValvula.addActionListener(e -> cerrarValvula());
+    }
+    
+    private void estadoInicio() {
+        // Iniciar la válvula cerrada y tanque vacío
+        valvulaModel.abrir(0);
+        tanque.setValue(0);
+        tuberiaCasa.setValue(0);
+        
+        porcentajeValvula.setText("0%");
     }
     
     public void detenerSimulacion() {
@@ -164,10 +173,12 @@ public class TanqueController {
                        
                         if (valvulaAbierta) {
                             System.out.println("LLENAR TANQUE MANUALMENTE if");
+                            vaciandoTanque = false;
                             llenarTanqueManualmente();
                             
                         }else{
                             System.out.println("VACIAR TANQUE MANUALMENTE if");
+                            llenandoTanque = false;
                             vaciarTanqueManual();
                         }
                         
@@ -182,53 +193,33 @@ public class TanqueController {
             }
         }).start();
     }
-
-    private void activarModoAutomatico() {
-        modoManual.setSelected(false);
-        //Deshabilitar Botones abrir y cerrar valvula
-        AbrirValvula.setEnabled(false);
-        CerrarValvula.setEnabled(false);
+    
+    private void activarModo(boolean modoActivado) {
+        System.out.println("MODO ACTIVADO" + modoActivado);
+        modoAutomatico.setSelected(modoActivado);
+        modoManual.setSelected(!modoActivado);
+        
+        AbrirValvula.setEnabled(!modoActivado);
+        CerrarValvula.setEnabled(!modoActivado);
     }
-
-    private void activarModoManual() {
-        modoAutomatico.setSelected(false);
-         //Habilitar Botones abrir y cerrar valvula
-        AbrirValvula.setEnabled(true);
-        CerrarValvula.setEnabled(true);
-    }
+    
+    
 
     private void abrirValvula() {
-    System.out.println("ABRIR VALVULA");
-    valvulaAbierta = true;
-    valvulaModel.abrir(100); // Abrir la válvula completamente
-    ColorValvula.setBackground(Color.GREEN);
-    
-    if (modoManual.isSelected()) {
-        // Detener cualquier proceso de vaciado antes de empezar a llenar
-        vaciandoTanque = false;
-        llenarTanqueManualmente(); // Iniciar el llenado manual
+        System.out.println("ABRIR VALVULA");
+        valvulaAbierta = true;
+        valvulaModel.abrir(100); // Abrir la válvula completamente
+        ColorValvula.setBackground(Color.GREEN);
     }
-}
 
     private void cerrarValvula() {
         System.out.println("CERRAR VALVULA");
         valvulaAbierta = false;
         valvulaModel.abrir(0); // Cerrar la válvula
         ColorValvula.setBackground(Color.RED);
-
-        if (modoManual.isSelected()) {
-            // Detener cualquier proceso de llenado antes de empezar a vaciar
-            llenandoTanque = false;
-            vaciarTanqueManual(); // Iniciar el vaciado manual
-        }
     }
 
-    private void estadoInicio() {
-        // Iniciar la válvula cerrada y tanque vacío
-        valvulaModel.abrir(0);
-        tanque.setValue(0);
-        tuberiaCasa.setValue(0);
-    }
+    
 
     private void llenarTanque() throws InterruptedException {
         System.out.println("LLENAR TANQUE " + progresoTanque);
