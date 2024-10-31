@@ -32,6 +32,7 @@ public class TanqueController {
     private boolean isRunning = false;
 
     // Variables de lógica del sistema
+    private double ALTURA_MAXIMA_METROS = 1.0;
     private int progresoTanque = 0;
     private boolean valvulaAbierta;
     private boolean vaciandoTanque = false;
@@ -378,7 +379,11 @@ public class TanqueController {
 
     private void actualizarTanque(int nivel) {
         tanque.setValue(nivel);
-        txtPorcentaje.setText(nivel + "%");
+        
+        // Convertir el nivel a metros
+        double nivelMetros = (nivel / 100.0) * ALTURA_MAXIMA_METROS;
+        txtPorcentaje.setText(String.format("%.1f m", nivelMetros));
+
 
         // Actualizar color de la válvula dependiendo de su estado
         SwingUtilities.invokeLater(() -> {
