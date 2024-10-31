@@ -100,8 +100,6 @@ public class TanqueController {
     }
 
     public void iniciarSimulacion() {
-        //ColorValvulaCasa.setBackground(Color.RED);
-        
         if (isRunning) {
             return; // Evitar múltiples hilos
         }
@@ -147,10 +145,14 @@ public class TanqueController {
                         // Lógica para el modo manual
                         System.out.println("LOGICA PARA EL MODO MANUAL");
                         
+                        //Condicion para que el proceso se pare cuando el tanque esta vacio
                         if(progresoTanque == 0){
+                            //Cerrar valvula
                             ColorValvulaCasa.setBackground(Color.RED);
+                            porcentajeValvulaCasa.setText("0%"); 
+
+                            //Dejar de pasar agua a la casa 
                             tuberiaCasa.setValue(0);
-                             porcentajeValvulaCasa.setText("0%"); 
                         }
                         
                        
@@ -177,18 +179,19 @@ public class TanqueController {
 
     private void activarModoAutomatico() {
         modoManual.setSelected(false);
+        //Deshabilitar Botones abrir y cerrar valvula
         AbrirValvula.setEnabled(false);
         CerrarValvula.setEnabled(false);
-        detenerSimulacion(); // Detener la simulación si está corriendo
     }
 
     private void activarModoManual() {
         modoAutomatico.setSelected(false);
+         //Habilitar Botones abrir y cerrar valvula
         AbrirValvula.setEnabled(true);
         CerrarValvula.setEnabled(true);
     }
 
-    private synchronized void abrirValvula() {
+    private void abrirValvula() {
     System.out.println("ABRIR VALVULA");
     valvulaAbierta = true;
     valvulaModel.abrir(100); // Abrir la válvula completamente
@@ -201,7 +204,7 @@ public class TanqueController {
     }
 }
 
-    private synchronized void cerrarValvula() {
+    private void cerrarValvula() {
         System.out.println("CERRAR VALVULA");
         valvulaAbierta = false;
         valvulaModel.abrir(0); // Cerrar la válvula
@@ -279,11 +282,9 @@ public class TanqueController {
             System.out.println("Otro proceso ya está en curso.");
             return; // Salir si ya hay un proceso activo
         }
-
         // Marcar que el llenado está en curso
         llenandoTanque = true;
         vaciandoTanque = false; // Asegurarse de que no se está vaciando
-
         System.out.println("Iniciando llenado del tanque...");
         
         // Crear un hilo para realizar el llenado continuo
@@ -313,14 +314,8 @@ public class TanqueController {
                     e.printStackTrace();
                 }
             }
-
             // Finalizar el proceso de llenado si se completa o si se cierra la válvula
-            llenandoTanque = false; // Marcar que el llenado ha finalizado
-
-            // Mensaje final si la válvula se cierra
-            if (!valvulaAbierta) {
-                System.out.println("La válvula se cerró. Deteniendo el llenado.");
-            }
+            llenandoTanque = false; // Marcar que el llenado ha finaliz
         }).start();
     }
 

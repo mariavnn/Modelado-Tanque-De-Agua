@@ -178,17 +178,24 @@ public class TanqueAgua extends javax.swing.JFrame {
         Valvula.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/llave-de-cierre.png"))); // NOI18N
         getContentPane().add(Valvula, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 20, -1, 120));
 
+        modoAutomatico.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         modoAutomatico.setText("Automatico");
         getContentPane().add(modoAutomatico, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 140, -1, -1));
 
         Casa.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/casa.png"))); // NOI18N
         getContentPane().add(Casa, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 280, 130, 130));
 
+        modoManual.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         modoManual.setText("Manual");
         getContentPane().add(modoManual, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 170, 90, -1));
         getContentPane().add(TuberiaValvula, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 50, 120, 20));
 
-        botonIniciar.setText("INICIAR");
+        botonIniciar.setBackground(new java.awt.Color(51, 153, 255));
+        botonIniciar.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        botonIniciar.setForeground(new java.awt.Color(255, 255, 255));
+        botonIniciar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/proximo.png"))); // NOI18N
+        botonIniciar.setText("Iniciar");
+        botonIniciar.setBorder(null);
         botonIniciar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 botonIniciarActionPerformed(evt);
@@ -196,7 +203,12 @@ public class TanqueAgua extends javax.swing.JFrame {
         });
         getContentPane().add(botonIniciar, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 30, 110, 30));
 
-        botonDetener.setText("DETENER");
+        botonDetener.setBackground(new java.awt.Color(0, 153, 255));
+        botonDetener.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        botonDetener.setForeground(new java.awt.Color(255, 255, 255));
+        botonDetener.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/prohibido.png"))); // NOI18N
+        botonDetener.setText("Detener");
+        botonDetener.setBorder(null);
         botonDetener.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 botonDetenerActionPerformed(evt);
@@ -204,11 +216,26 @@ public class TanqueAgua extends javax.swing.JFrame {
         });
         getContentPane().add(botonDetener, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 80, 110, 30));
 
+        CerrarValvula.setBackground(new java.awt.Color(51, 153, 255));
+        CerrarValvula.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        CerrarValvula.setForeground(new java.awt.Color(255, 255, 255));
+        CerrarValvula.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/cerrar.png"))); // NOI18N
         CerrarValvula.setText("Cerrar Valvula");
-        getContentPane().add(CerrarValvula, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 60, 120, -1));
+        CerrarValvula.setBorder(null);
+        getContentPane().add(CerrarValvula, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 80, 120, 30));
 
+        AbrirValvula.setBackground(new java.awt.Color(51, 153, 255));
+        AbrirValvula.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        AbrirValvula.setForeground(new java.awt.Color(255, 255, 255));
+        AbrirValvula.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/cerrar-con-llave.png"))); // NOI18N
         AbrirValvula.setText("Abrir Valvula");
-        getContentPane().add(AbrirValvula, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 20, 120, -1));
+        AbrirValvula.setBorder(null);
+        AbrirValvula.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                AbrirValvulaActionPerformed(evt);
+            }
+        });
+        getContentPane().add(AbrirValvula, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 30, 120, 30));
 
         ValvulaCasa.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/valvulaCasa.png"))); // NOI18N
         getContentPane().add(ValvulaCasa, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 340, 110, 80));
@@ -216,8 +243,9 @@ public class TanqueAgua extends javax.swing.JFrame {
         TuberiaCasa.setForeground(new java.awt.Color(0, 153, 255));
         getContentPane().add(TuberiaCasa, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 380, 60, 30));
 
-        Fondo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/fond2.png"))); // NOI18N
-        getContentPane().add(Fondo, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -30, 660, 470));
+        Fondo.setBackground(new java.awt.Color(204, 255, 255));
+        Fondo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/fondo.png"))); // NOI18N
+        getContentPane().add(Fondo, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 660, 430));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -244,6 +272,10 @@ public class TanqueAgua extends javax.swing.JFrame {
     private void porcentajeValvulaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_porcentajeValvulaActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_porcentajeValvulaActionPerformed
+
+    private void AbrirValvulaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AbrirValvulaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_AbrirValvulaActionPerformed
 
     /**
      * @param args the command line arguments
