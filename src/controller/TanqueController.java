@@ -64,7 +64,7 @@ public class TanqueController {
         this.porcentajeValvulaCasa = porcentajeValvulaCasa;
 
         // Configurar el estado inicial
-        modoAutomatico.setSelected(true);
+        //modoAutomatico.setSelected(true);
         AbrirValvula.setEnabled(false);
         CerrarValvula.setEnabled(false);
 
@@ -84,9 +84,14 @@ public class TanqueController {
         valvulaModel.abrir(0);
         tanque.setValue(0);
         tuberiaCasa.setValue(0);
-        
+    
         porcentajeValvula.setText("0%");
         porcentajeValvulaCasa.setText("0%");
+        
+        if(!modoAutomatico.isSelected() && !modoManual.isSelected()){
+            //SI NINGUN MODO ESTA SELECCIONADO AL INICIAR LA SIMULACION MUESTRA UN DIALOG QUE PIDA ESCOGER UN MODO
+            JOptionPane.showMessageDialog(null, "Por favor, seleccione un modo (Automático o Manual) para iniciar la simulación.", "Modo no seleccionado", JOptionPane.WARNING_MESSAGE);
+        }
     }
     
     public void detenerSimulacion() {
@@ -103,6 +108,9 @@ public class TanqueController {
         porcentajeValvula.setText("0%");
         ColorValvulaCasa.setBackground(Color.RED);
         tuberiaCasa.setValue(0);
+        
+        modoAutomatico.setEnabled(true);
+        modoManual.setEnabled(true);
         
         if(modoManual.isSelected()){
             AbrirValvula.setEnabled(true);
@@ -200,6 +208,12 @@ public class TanqueController {
         
         AbrirValvula.setEnabled(!modoActivado);
         CerrarValvula.setEnabled(!modoActivado);
+        
+        if(modoAutomatico.isSelected()){
+            modoManual.setEnabled(false);
+        }else{
+            modoAutomatico.setEnabled(false);
+        }
     }
     
     //FUNCIONES PARA MODO AUTOMATICO
