@@ -86,6 +86,7 @@ public class TanqueController {
         tuberiaCasa.setValue(0);
         
         porcentajeValvula.setText("0%");
+        porcentajeValvulaCasa.setText("0%");
     }
     
     public void detenerSimulacion() {
@@ -125,21 +126,19 @@ public class TanqueController {
         new Thread(() -> {
             try {
                 while (isRunning) {
+                    //LOGICA PARA EL MODO AUTOMATICO
                     if (modoAutomatico.isSelected()) {
                         // Llenar el tanque por primera vez
                         System.out.println("LLENADO DEL TANQUE DESDE 0");
                         valvulaAbierta = true;
-                        llenarTanque();
+                        llenarTanqueAutomatico(0, 100, "100"); //Llenar al 100%
                         
 
                         // Comenzar el ciclo de llenado y vaciado
                         while (isRunning && modoAutomatico.isSelected()) {
                             
                             //Valvula de la casa se mantiene abierta para permitir el paso del agua siempre
-                            porcentajeValvulaCasa.setText("100%"); 
-                            ColorValvulaCasa.setBackground(Color.GREEN);
-                            tuberiaCasa.setValue(100);
-                            
+                            actualizarCasa();
                             
                             // Si el tanque está lleno, empezar a pasar agua a la casa
                             if (progresoTanque >= 100 || progresoTanque >= 80) {
@@ -151,13 +150,12 @@ public class TanqueController {
                             if (progresoTanque <= 60) {
                                 System.out.println("DENTRO DEL BUCLE DE 60 A 80");
                                 while (isRunning && progresoTanque < 80) {
-                                    llenarTanqueDesde60(); // Llenar de 60 a 80
+                                    llenarTanqueAutomatico(60, 80, "60"); // Llenar de 60 a 80
                                 }
                             }
                         }
+                        //LOGICA PARA EL MODO MANUAL
                     } else if (modoManual.isSelected()) {
-                        System.out.println("VALVULA ABIERTA " + valvulaAbierta);
-                        // Lógica para el modo manual
                         System.out.println("LOGICA PARA EL MODO MANUAL");
                         
                         //Condicion para que el proceso se pare cuando el tanque esta vacio
@@ -165,25 +163,25 @@ public class TanqueController {
                             //Cerrar valvula
                             ColorValvulaCasa.setBackground(Color.RED);
                             porcentajeValvulaCasa.setText("0%"); 
-
                             //Dejar de pasar agua a la casa 
                             tuberiaCasa.setValue(0);
                         }
                         
                        
                         if (valvulaAbierta) {
-                            System.out.println("LLENAR TANQUE MANUALMENTE if");
+                            System.out.println("LLENAR TANQUE MANUALMENTE");
                             vaciandoTanque = false;
                             llenarTanqueManualmente();
                             
                         }else{
-                            System.out.println("VACIAR TANQUE MANUALMENTE if");
+                            System.out.println("VACIAR TANQUE MANUALMENTE");
                             llenandoTanque = false;
                             vaciarTanqueManual();
                         }
                         
                     }else{
                         System.out.println("SELECCIONA UN MODO ");
+                        break;
                     }
                 }
             } catch (InterruptedException e) {
@@ -194,6 +192,7 @@ public class TanqueController {
         }).start();
     }
     
+    //FUNCION PARA ACTIVAR MODO MANUAL O AUTOMATICO
     private void activarModo(boolean modoActivado) {
         System.out.println("MODO ACTIVADO" + modoActivado);
         modoAutomatico.setSelected(modoActivado);
@@ -203,60 +202,32 @@ public class TanqueController {
         CerrarValvula.setEnabled(!modoActivado);
     }
     
+    //FUNCIONES PARA MODO AUTOMATICO
     
-
-    private void abrirValvula() {
-        System.out.println("ABRIR VALVULA");
-        valvulaAbierta = true;
-        valvulaModel.abrir(100); // Abrir la válvula completamente
-        ColorValvula.setBackground(Color.GREEN);
-    }
-
-    private void cerrarValvula() {
-        System.out.println("CERRAR VALVULA");
-        valvulaAbierta = false;
-        valvulaModel.abrir(0); // Cerrar la válvula
-        ColorValvula.setBackground(Color.RED);
-    }
-
-    
-
-    private void llenarTanque() throws InterruptedException {
-        System.out.println("LLENAR TANQUE " + progresoTanque);
-        for (progresoTanque = 0; progresoTanque <= 100; progresoTanque++) {
+    //FUNCION PARA LLENAR EL TANQUE EN EL MODO AUTOMATICO
+    //Esta funcion recibe como parametro desde donde y hasta donde se llena el tanque
+    private void llenarTanqueAutomatico(int inicio, int fin, String porcentaje) throws InterruptedException {
+        System.out.println("LLENAR TANQUE DESDE " + inicio + " HASTA " + fin);
+        for (progresoTanque = inicio; progresoTanque <= fin; progresoTanque++) {
             if (!isRunning || !modoAutomatico.isSelected()) return;
-            porcentajeValvula.setText("100%"); 
-            porcentajeValvulaCasa.setText("0%"); 
+
+            // Actualizar porcentaje de la válvula
+            valvulaAbierta = true;
+            porcentajeValvula.setText( porcentaje + "%");
             
+
             // Simular medición del transmisor
             transmisorNivel.setNivelAgua(progresoTanque / 100.0);
             controlNivel.verificarNivel(transmisorNivel.medirNivel());
 
             // Actualizar interfaz gráfica
             actualizarTanque(progresoTanque);
-            Thread.sleep(100);
+            Thread.sleep(100); // Simular tiempo de llenado
         }
     }
+
     
-    private void llenarTanqueDesde60() throws InterruptedException {
-    // Llenar el tanque desde 60 hasta 80
-        System.out.println("LLENAR TANQUE DESDE 60"+ progresoTanque);
-        for (progresoTanque = 60; progresoTanque <= 80; progresoTanque++) {
-            if (!isRunning || !modoAutomatico.isSelected()) return;
-                porcentajeValvula.setText("60%"); //La valvula esta abierta a un 50%
-                valvulaAbierta = true;
-                
-                // Simular medición del transmisor
-                transmisorNivel.setNivelAgua(progresoTanque / 100.0);
-                controlNivel.verificarNivel(transmisorNivel.medirNivel());
-
-                // Actualizar interfaz gráfica
-                actualizarTanque(progresoTanque);
-                Thread.sleep(100);// Simular tiempo de llenado
-
-            }
-    }
-
+    //FUNCION PARA VACIAR EL TANQUE EN MODO AUTOMATICO
     private void vaciarTanque() throws InterruptedException {
         while (isRunning && progresoTanque > 60) {
             porcentajeValvula.setText("40%"); //La valvula esta abierta a un 50%
@@ -271,8 +242,26 @@ public class TanqueController {
     }
 
 
+    //FUNCIONES PARA MODO MANUAL
+    
+    //FUNCION PARA ABRIR LA VALVULA
+    private void abrirValvula() {
+        System.out.println("ABRIR VALVULA");
+        valvulaAbierta = true;
+        valvulaModel.abrir(100); // Abrir la válvula completamente
+        porcentajeValvula.setText("100%");
+    }
+    
+    //FUNCION PARA CERRAR LA VALVULA
+    private void cerrarValvula() {
+        System.out.println("CERRAR VALVULA");
+        valvulaAbierta = false;
+        valvulaModel.abrir(0); // Cerrar la válvula
+        porcentajeValvula.setText("0%");
+    }
     
     
+    //FUNCION PARA LLENAR EL TANQUE DE FORMA MANUAL
     private synchronized void llenarTanqueManualmente() {
         // Verificar si ya se está llenando el tanque o si se está vaciando
         if (llenandoTanque || vaciandoTanque) {
@@ -287,10 +276,10 @@ public class TanqueController {
         // Crear un hilo para realizar el llenado continuo
         new Thread(() -> {
             while (valvulaAbierta && progresoTanque < 100 && llenandoTanque) {
-                // Aumentar el progreso del tanque
-                porcentajeValvula.setText("100%"); //La valvula se encuentra abierta un 100% 
-                progresoTanque++;
+                
+                // Aumentar el progreso del tanque 
                 System.out.println("LLENAR TANQUE MANUALMENTE: Progreso = " + progresoTanque);
+                progresoTanque++;
 
                 // Simular llenado
                 transmisorNivel.setNivelAgua(progresoTanque / 100.0);
@@ -300,7 +289,7 @@ public class TanqueController {
                 // Verificar si el tanque está lleno
                 if (progresoTanque >= 100) {
                     System.out.println("Tanque lleno.");
-                    valvulaAbierta = false; // Detener el llenado
+                    cerrarValvula(); //Detener llenado
                 }
 
                 // Pausar brevemente para simular el llenado gradual
@@ -314,7 +303,9 @@ public class TanqueController {
             llenandoTanque = false; // Marcar que el llenado ha finaliz
         }).start();
     }
-
+    
+    
+    //FUNCION PARA VACIAR EL TANQUE DE FORMA MANUAL
     private synchronized void vaciarTanqueManual() {
         // Verificar si ya se está vaciando el tanque o si se está llenando
         if (vaciandoTanque || llenandoTanque) {
@@ -332,14 +323,12 @@ public class TanqueController {
         new Thread(() -> {
             while (progresoTanque > 0 && vaciandoTanque) {
                 // Reducir el progreso del tanque
-                porcentajeValvula.setText("0%"); //La valvula se encuentra cerrada a un 0%
+                cerrarValvula();//La valvula se encuentra cerrada a un 0%
                 progresoTanque--;
                 System.out.println("VACIAR TANQUE MANUALMENTE: Progreso = " + progresoTanque);
 
                 // Simular el paso de agua hacia la casa
-                porcentajeValvulaCasa.setText("100%"); 
-                ColorValvulaCasa.setBackground(Color.GREEN);
-                tuberiaCasa.setValue(100);// Simular el flujo de agua hacia la casa
+                actualizarCasa();
                 
                 actualizarTanque(progresoTanque); // Actualizar la interfaz gráfica
 
@@ -366,8 +355,14 @@ public class TanqueController {
         }).start();
     }
     
- 
-
+    
+    //FUNCION CON INSTRUCCIONES PARA SIMULAR EL PASO DE AGUA A LA CASA
+    private void actualizarCasa(){
+        porcentajeValvulaCasa.setText("100%"); 
+        ColorValvulaCasa.setBackground(Color.GREEN);
+        tuberiaCasa.setValue(100);
+    }
+    
     private void actualizarTanque(int nivel) {
         tanque.setValue(nivel);
         
