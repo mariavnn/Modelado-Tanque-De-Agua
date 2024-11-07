@@ -98,7 +98,6 @@ public class TanqueController {
         progresoTanque = 0;
         actualizarTanque(progresoTanque);
         
-        
         isRunning = false;
         llenandoTanque = false;  // Detener cualquier proceso de llenado en curso
         vaciandoTanque = false;  // Detener cualquier proceso de vaciado en curso
@@ -122,6 +121,7 @@ public class TanqueController {
         
         System.out.println("Simulación detenida.");
     }
+        
 
     public void iniciarSimulacion() {
         if (isRunning) {
@@ -292,6 +292,7 @@ public class TanqueController {
             while (valvulaAbierta && progresoTanque < 100 && llenandoTanque) {
                 
                 // Aumentar el progreso del tanque 
+                abrirValvula();
                 System.out.println("LLENAR TANQUE MANUALMENTE: Progreso = " + progresoTanque);
                 progresoTanque++;
 
@@ -360,12 +361,8 @@ public class TanqueController {
                     e.printStackTrace();
                 }
             }
-
-            // Mensaje final cuando el tanque se vacía completamente
-            if (progresoTanque <= 0) {
-                System.out.println("El tanque ya está completamente vacío.");
-                tuberiaCasa.setValue(0); // Asegurarse de detener el flujo de agua hacia la casa
-            }
+            vaciandoTanque = false;  
+          
         }).start();
     }
     
