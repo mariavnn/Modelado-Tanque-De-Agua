@@ -57,7 +57,6 @@ public class TanqueAgua extends javax.swing.JFrame {
         Tanque = new javax.swing.JProgressBar();
         cableTnivel2 = new javax.swing.JProgressBar();
         ColorValvulaCasa = new javax.swing.JPanel();
-        porcentajeValvulaCasa = new javax.swing.JTextField();
         cableTnivel = new javax.swing.JProgressBar();
         Valvula = new javax.swing.JLabel();
         modoAutomatico = new javax.swing.JRadioButton();
@@ -71,6 +70,7 @@ public class TanqueAgua extends javax.swing.JFrame {
         ValvulaCasa = new javax.swing.JLabel();
         TuberiaCasa = new javax.swing.JProgressBar();
         Fondo = new javax.swing.JLabel();
+        porcentajeValvulaCasa = new javax.swing.JTextField();
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -147,27 +147,15 @@ public class TanqueAgua extends javax.swing.JFrame {
         ColorValvulaCasa.setBackground(new java.awt.Color(255, 51, 51));
         ColorValvulaCasa.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
-        porcentajeValvulaCasa.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        porcentajeValvulaCasa.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                porcentajeValvulaCasaActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout ColorValvulaCasaLayout = new javax.swing.GroupLayout(ColorValvulaCasa);
         ColorValvulaCasa.setLayout(ColorValvulaCasaLayout);
         ColorValvulaCasaLayout.setHorizontalGroup(
             ColorValvulaCasaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ColorValvulaCasaLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(porcentajeValvulaCasa, javax.swing.GroupLayout.PREFERRED_SIZE, 44, Short.MAX_VALUE)
-                .addContainerGap())
+            .addGap(0, 56, Short.MAX_VALUE)
         );
         ColorValvulaCasaLayout.setVerticalGroup(
             ColorValvulaCasaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(ColorValvulaCasaLayout.createSequentialGroup()
-                .addComponent(porcentajeValvulaCasa, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 6, Short.MAX_VALUE))
+            .addGap(0, 36, Short.MAX_VALUE)
         );
 
         getContentPane().add(ColorValvulaCasa, new org.netbeans.lib.awtextra.AbsoluteConstraints(382, 377, 60, 40));
@@ -183,7 +171,7 @@ public class TanqueAgua extends javax.swing.JFrame {
         getContentPane().add(modoAutomatico, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 140, -1, -1));
 
         Casa.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/casa.png"))); // NOI18N
-        getContentPane().add(Casa, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 280, 130, 130));
+        getContentPane().add(Casa, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 310, 130, 130));
 
         modoManual.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         modoManual.setText("Manual");
@@ -238,14 +226,22 @@ public class TanqueAgua extends javax.swing.JFrame {
         getContentPane().add(AbrirValvula, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 30, 120, 30));
 
         ValvulaCasa.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/valvulaCasa.png"))); // NOI18N
-        getContentPane().add(ValvulaCasa, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 340, 110, 80));
+        getContentPane().add(ValvulaCasa, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 360, 110, 80));
 
         TuberiaCasa.setForeground(new java.awt.Color(0, 153, 255));
-        getContentPane().add(TuberiaCasa, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 380, 60, 30));
+        getContentPane().add(TuberiaCasa, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 400, 60, 30));
 
         Fondo.setBackground(new java.awt.Color(204, 255, 255));
         Fondo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/fondo.png"))); // NOI18N
-        getContentPane().add(Fondo, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 660, 430));
+        getContentPane().add(Fondo, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 750, 510));
+
+        porcentajeValvulaCasa.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        porcentajeValvulaCasa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                porcentajeValvulaCasaActionPerformed(evt);
+            }
+        });
+        getContentPane().add(porcentajeValvulaCasa, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 440, 44, 30));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
