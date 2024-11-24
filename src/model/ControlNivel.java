@@ -9,19 +9,18 @@ package model;
  * @author maria
  */
 public class ControlNivel {
-     private Valvula valvula;
+    private double nivelActual;
 
-    public ControlNivel(Valvula valvula) {
-        this.valvula = valvula;
+    public ControlNivel() {
+        this.nivelActual = 0.0; // Nivel inicial
     }
 
-    public void verificarNivel(double nivelAgua) {
-        if (nivelAgua <= 0.6) {
-            valvula.abrir(100);
-        } else if (nivelAgua < 1.0) {
-            valvula.abrir(50);
-        } else {
-            valvula.abrir(0);
-        }
+    public void setNivelActual(double nivelNuevo) {
+        this.nivelActual = nivelNuevo;
     }
+    
+    public double obtenerNivelActual() {
+        return nivelActual;
+    }
+
 }
