@@ -4,12 +4,7 @@
  */
 package model;
 
-import controller.TanqueController;
 import java.awt.Color;
-import java.util.List;
-import java.util.ArrayList;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
@@ -23,46 +18,49 @@ public class CajaSeguridad {
     private ControlNivel controlNivel;
     private JProgressBar tanque;
     private JTextField alerta; // Cambiado a JTextField
-    private EstadoTanque estadoTanque;
+    private boolean enEmergencia = false;
+   
 
     public CajaSeguridad(TransmisorNivel transmisorNivel, ControlNivel controlNivel, JProgressBar tanque, JTextField alerta) {
         this.transmisorNivel = transmisorNivel;
         this.controlNivel = controlNivel;
         this.tanque = tanque;
         this.alerta = alerta; 
-        this.estadoTanque = EstadoTanque.NORMAL;
+       
     }
-
-   
 
     // Método principal de monitoreo
     public void monitorear() {
         new Thread(() -> {
             try {
                 while (true) {
+                    if(isEnEmergencia()) break;
+                    
+                    
                     double nivelTransmisor = transmisorNivel.medirNivel();
                     System.out.println("NIVEL TRANSMISOR " + nivelTransmisor);
                     double nivelControl = controlNivel.obtenerNivelActual();
                     System.out.println("CONTROL NIVEL " + nivelControl);
                     
-                    System.out.println(" ESTADO DEL TANQUE " + estadoTanque);
 
                     // Verificar sincronización de niveles
                     if (Math.abs(nivelTransmisor - nivelControl) > 0.05) { // Tolerancia del 5%
                         mostrarAlerta("Desincronización detectada entre el transmisor y el control de nivel.");
+                        activarEmergencia();
                     }
 
                     // Verificar niveles del tanque y  sus alertas
-                    if (nivelTransmisor > 90.0) {
+                    if (nivelTransmisor >= 90.0) {
                         mostrarAlerta("¡Alerta! El tanque está desbordándose.");
-                        setEstadoTanque(EstadoTanque.DESBORDANDO);
+                        activarEmergencia();
+                        
                        
-                    }else if (nivelTransmisor < 30.0) {
+                    }else if (nivelTransmisor <= 30.0) {
                         mostrarAlerta("¡Alerta! Nivel bajo de agua detectado.");
-                        setEstadoTanque(EstadoTanque.NIVEL_BAJO);
+                        //activarEmergencia();
                     }else{
                         mostrarAlerta("El tanque esta funcionando correctamente");
-                        setEstadoTanque(EstadoTanque.NORMAL);
+                        desactivarEmergencia();
                     }
                     // Pausa antes de la siguiente verificación
                     Thread.sleep(500); // 500 ms
@@ -81,13 +79,17 @@ public class CajaSeguridad {
         });
     }
     
-    public EstadoTanque getEstadoTanque() {
-        return estadoTanque;
+    private void activarEmergencia() {
+        enEmergencia = true;
+        System.out.println("Emergencia activada: ");
     }
 
-    public void setEstadoTanque(EstadoTanque estadoTanque) {
-        this.estadoTanque = estadoTanque;
-       
+    private void desactivarEmergencia() {
+        enEmergencia = false;
+        System.out.println("Emergencia desactivada: ");
     }
-
+    
+    public boolean isEnEmergencia() {
+        return enEmergencia;
+    }
 }

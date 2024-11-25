@@ -11,7 +11,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.CajaSeguridad;
 import model.ControlNivel;
-import model.EstadoTanque;
 import model.TransmisorNivel;
 import model.Valvula;
 
@@ -80,6 +79,8 @@ public class TanqueController {
         this.cajaSeguridad = cajaSeguridad;
         this.porcentajeValvula = porcentajeValvula;
         this.porcentajeValvulaCasa = porcentajeValvulaCasa;
+        
+       
 
         // Configurar el estado inicial
         //modoAutomatico.setSelected(true);
@@ -95,6 +96,8 @@ public class TanqueController {
         // Listeners para los botones de válvula
         AbrirValvula.addActionListener(e -> abrirValvula());
         CerrarValvula.addActionListener(e -> cerrarValvula());
+        
+        
     }
     
     private void estadoInicio() {
@@ -161,8 +164,7 @@ public class TanqueController {
         estadoInicio();
         
         //INICIA LA SIMULACION E INICIA EL MONITOREO DE LA CAJA DE SEGURIDAD
-        manejarEstadoTanque();
-        cajaSeguridad.monitorear();
+        
         
 
         // Hilo para el llenado del tanque
@@ -170,8 +172,13 @@ public class TanqueController {
             try {
                 while (isRunning) {
                     //LOGICA PARA EL MODO AUTOMATICO
+                    
+                    cajaSeguridad.monitorear();
                     if (modoAutomatico.isSelected()) {
                         // Llenar el tanque por primera vez
+                        System.out.println("VERIFICA ESTADO DE EMERGENCIA ");
+                        verificarEstadoEmergencia();
+                        
                         System.out.println("LLENADO DEL TANQUE DESDE 0");
                         valvulaAbierta = true;
                         
@@ -180,7 +187,8 @@ public class TanqueController {
 
                         // Comenzar el ciclo de llenado y vaciado
                         while (isRunning && modoAutomatico.isSelected()) {
-                            
+                            System.out.println("VERIFICA ESTADO DE EMERGENCIA ");
+                            verificarEstadoEmergencia();
                             //Valvula de la casa se mantiene abierta para permitir el paso del agua siempre
                             actualizarCasa();
                             
@@ -202,6 +210,8 @@ public class TanqueController {
                     } else if (modoManual.isSelected()) {
                         System.out.println("LOGICA PARA EL MODO MANUAL");
                         
+                        System.out.println("VERIFICA ESTADO DE EMERGENCIA ");
+                        verificarEstadoEmergencia();
                         //Condicion para que el proceso se pare cuando el tanque esta vacio
                         if(progresoTanque == 0){
                             //Cerrar valvula
@@ -238,6 +248,21 @@ public class TanqueController {
         }).start();
     }
     
+    public void verificarEstadoEmergencia(){
+        if (cajaSeguridad.isEnEmergencia()) {
+            System.out.println("Emergencia detectada: " + cajaSeguridad.isEnEmergencia());
+            manejarEmergencia();
+                       
+        }
+    }
+
+    private void manejarEmergencia() {
+        // Aquí puedes implementar la lógica adicional para manejar la emergencia
+         System.out.println("MANEJAR Emergencia detectada: " + cajaSeguridad.isEnEmergencia());
+         isRunning = false;
+         detenerSimulacion();
+    }
+    
     //FUNCION PARA ACTIVAR MODO MANUAL O AUTOMATICO
     private void activarModo(boolean modoActivado) {
         System.out.println("MODO ACTIVADO" + modoActivado);
@@ -261,7 +286,7 @@ public class TanqueController {
     private void llenarTanqueAutomatico(int inicio, int fin, String porcentaje) throws InterruptedException {
         System.out.println("LLENAR TANQUE DESDE " + inicio + " HASTA " + fin);
         for (progresoTanque = inicio; progresoTanque <= fin; progresoTanque++) {
-            if (!isRunning || !modoAutomatico.isSelected()) return;
+            if (!isRunning || !modoAutomatico.isSelected() || cajaSeguridad.isEnEmergencia()) break;
 
             // Actualizar porcentaje de la válvula
             valvulaAbierta = true;
@@ -270,6 +295,7 @@ public class TanqueController {
             // Actualizar interfaz gráfica
             actualizarTanque(progresoTanque);
             Thread.sleep(100); // Simular tiempo de llenado
+            
         }
     }
 
@@ -277,6 +303,9 @@ public class TanqueController {
     //FUNCION PARA VACIAR EL TANQUE EN MODO AUTOMATICO
     public void vaciarTanque() throws InterruptedException {
         while (isRunning && progresoTanque > 60) {
+            if (!isRunning ) break;
+            
+            
             porcentajeValvula.setText("40%"); //La valvula esta abierta a un 50%
             valvulaAbierta = false;
             progresoTanque--; // Reducir el nivel del tanque
@@ -399,31 +428,6 @@ public class TanqueController {
         }).start();
     }
    
-    
-    public void manejarEstadoTanque() {
-        EstadoTanque estado = cajaSeguridad.getEstadoTanque(); 
-        
-        System.out.println("ESTADO DEL TANQUE RECIBIDO EN CONTROLADOR " + estado);
-
-        switch (estado) {
-            case DESBORDANDO -> {
-                // Si el tanque está desbordando, vaciar el tanque o tomar otra acción
-                try {
-                    vaciarTanque();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            case NIVEL_BAJO -> // Si el nivel es bajo, puedes añadir más funcionalidades aquí
-                System.out.println("Nivel bajo de agua detectado.");
-
-            case NORMAL -> // El tanque está funcionando correctamente
-                System.out.println("El tanque está funcionando correctamente.");
-        }
-    }
-    
-    
     //FUNCION CON INSTRUCCIONES PARA SIMULAR EL PASO DE AGUA A LA CASA
     private void actualizarCasa(){
         porcentajeValvulaCasa.setText("100%"); 

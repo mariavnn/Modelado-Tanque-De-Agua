@@ -8,8 +8,3 @@ package model;
  *
  * @author Victoria
  */
-public enum EstadoTanque {
-    NORMAL,
-    DESBORDANDO,
-    NIVEL_BAJO
-}
