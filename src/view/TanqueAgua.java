@@ -80,6 +80,7 @@ public class TanqueAgua extends javax.swing.JFrame {
         ValvulaSalidaSeg = new javax.swing.JLabel();
         TuberiaEntrada2 = new javax.swing.JProgressBar();
         CajaSeguridad = new javax.swing.JLabel();
+        TransmisorLevelSeg = new javax.swing.JLabel();
         jProgressBar2 = new javax.swing.JProgressBar();
         TuberiaSalida2 = new javax.swing.JProgressBar();
         jProgressBar4 = new javax.swing.JProgressBar();
@@ -304,10 +305,13 @@ public class TanqueAgua extends javax.swing.JFrame {
         getContentPane().add(TuberiaEntrada2, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 130, 80, 20));
 
         CajaSeguridad.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/cajaSeguridad.png"))); // NOI18N
-        getContentPane().add(CajaSeguridad, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 300, -1, 90));
+        getContentPane().add(CajaSeguridad, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 190, -1, 90));
+
+        TransmisorLevelSeg.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/control.png"))); // NOI18N
+        getContentPane().add(TransmisorLevelSeg, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 330, -1, -1));
 
         jProgressBar2.setBackground(new java.awt.Color(204, 0, 204));
-        getContentPane().add(jProgressBar2, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 90, 10, 240));
+        getContentPane().add(jProgressBar2, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 90, 10, 250));
 
         TuberiaSalida2.setForeground(new java.awt.Color(102, 204, 255));
         getContentPane().add(TuberiaSalida2, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 490, 40, 18));
@@ -338,7 +342,7 @@ public class TanqueAgua extends javax.swing.JFrame {
         getContentPane().add(jProgressBar7, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 90, 10, 40));
 
         jProgressBar8.setBackground(new java.awt.Color(204, 0, 204));
-        getContentPane().add(jProgressBar8, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 370, 50, 10));
+        getContentPane().add(jProgressBar8, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 370, 200, 10));
 
         jProgressBar6.setBackground(new java.awt.Color(204, 0, 204));
         getContentPane().add(jProgressBar6, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 370, 10, 120));
@@ -351,7 +355,7 @@ public class TanqueAgua extends javax.swing.JFrame {
 
         Fondo.setBackground(new java.awt.Color(204, 255, 255));
         Fondo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/fondo1.png"))); // NOI18N
-        getContentPane().add(Fondo, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -10, 1000, 570));
+        getContentPane().add(Fondo, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, -10, 1000, 570));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -434,6 +438,7 @@ public class TanqueAgua extends javax.swing.JFrame {
     private javax.swing.JPanel ColorValvulaCasa2;
     private javax.swing.JLabel Fondo;
     private javax.swing.JProgressBar Tanque;
+    private javax.swing.JLabel TransmisorLevelSeg;
     private javax.swing.JProgressBar TuberiaEntrada1;
     private javax.swing.JProgressBar TuberiaEntrada2;
     private javax.swing.JProgressBar TuberiaSalida1;
