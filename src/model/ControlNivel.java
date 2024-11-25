@@ -19,8 +19,8 @@ public class ControlNivel {
         this.nivelActual = nivelNuevo;
     }
     
-    public double obtenerNivelActual() {
-        return nivelActual;
+    public double medirNivel() {
+        return this.nivelActual;
     }
 
 }

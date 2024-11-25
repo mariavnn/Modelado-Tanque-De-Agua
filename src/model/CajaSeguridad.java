@@ -14,10 +14,24 @@ import javax.swing.SwingUtilities;
  * @author Victoria
  */
 public class CajaSeguridad {
+    private JTextField alerta; // Cambiado a JTextField
+
+    public CajaSeguridad(JTextField alerta) {
+        this.alerta = alerta;
+    }
+    
+    public void mostrarAlerta(String mensaje) {
+        SwingUtilities.invokeLater(() -> {
+            // Cambiar el texto del JTextField de alerta
+            alerta.setText(mensaje);
+            alerta.setForeground(Color.RED); 
+        });
+    }
+    /*
     private TransmisorNivel transmisorNivel;
     private ControlNivel controlNivel;
     private JProgressBar tanque;
-    private JTextField alerta; // Cambiado a JTextField
+   
     private boolean enEmergencia = false;
    
 
@@ -71,13 +85,7 @@ public class CajaSeguridad {
         }).start();
     }
 
-    private void mostrarAlerta(String mensaje) {
-        SwingUtilities.invokeLater(() -> {
-            // Cambiar el texto del JTextField de alerta
-            alerta.setText(mensaje);
-            alerta.setForeground(Color.RED); 
-        });
-    }
+   
     
     private void activarEmergencia() {
         enEmergencia = true;
@@ -92,4 +100,5 @@ public class CajaSeguridad {
     public boolean isEnEmergencia() {
         return enEmergencia;
     }
+    */
 }

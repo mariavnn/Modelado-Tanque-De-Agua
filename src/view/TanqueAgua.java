@@ -5,6 +5,8 @@
 package view;
 
 
+import controller.ControlLoop;
+import controller.SecurityLoop;
 import controller.TanqueController;
 import java.awt.Color;
 import javax.swing.Timer;
@@ -27,18 +29,26 @@ public class TanqueAgua extends javax.swing.JFrame {
     private ControlNivel controlNivel;
     private CajaSeguridad cajaSeguridad;
     private TanqueController tanqueController;
+    private ControlLoop controlLoop;
+    private SecurityLoop securityLoop;
     
     public TanqueAgua() {
         initComponents();
         valvula = new Valvula();
         transmisorNivel = new TransmisorNivel();
         controlNivel = new ControlNivel();
-        cajaSeguridad = new CajaSeguridad(transmisorNivel, controlNivel, Tanque, Alerta);
-        tanqueController = new TanqueController(  Tanque, TuberiaSalida1, TuberiaSalida2, TuberiaEntrada1, TuberiaEntrada2, Valvula, ValvulaEntradaSeg, ValvulaSalidaSeg,
-                txtPorcentaje, porcentajeValvula, porcentajeValvulaCasa,
-                botonIniciar, AbrirValvula, CerrarValvula, ColorValvula, ColorValvula2, 
-                ColorValvulaCasa, ColorValvulaCasa2, modoAutomatico, modoManual, controlNivel, 
-                transmisorNivel, valvula, CajaSeguridad, cajaSeguridad);
+        cajaSeguridad = new CajaSeguridad(Alerta);
+        
+        controlLoop = new ControlLoop(Tanque, ColorValvulaCasa, porcentajeValvulaCasa, porcentajeValvula, 
+                TuberiaSalida2, txtPorcentaje, ColorValvula, cajaSeguridad, controlNivel, transmisorNivel, valvula);
+        securityLoop = new SecurityLoop(transmisorNivel, cajaSeguridad, controlLoop);
+        
+        tanqueController = new TanqueController(Tanque, AbrirValvula, CerrarValvula, botonIniciar, botonDetener, 
+                modoAutomatico, modoManual, TuberiaEntrada1, TuberiaEntrada2, TuberiaSalida1, TuberiaSalida2, 
+                Valvula, ValvulaEntradaSeg, ValvulaSalidaSeg, txtPorcentaje, ColorValvula, ColorValvula2, ColorValvulaCasa, 
+                ColorValvulaCasa2, porcentajeValvulaCasa, porcentajeValvula, CajaSeguridad, controlNivel, transmisorNivel, 
+                valvula, controlLoop, securityLoop);
+        
         
         setLocationRelativeTo(null);
     }
@@ -355,14 +365,14 @@ public class TanqueAgua extends javax.swing.JFrame {
 
         Fondo.setBackground(new java.awt.Color(204, 255, 255));
         Fondo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/fondo1.png"))); // NOI18N
-        getContentPane().add(Fondo, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, -10, 1000, 570));
+        getContentPane().add(Fondo, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -10, 980, 560));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void botonIniciarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonIniciarActionPerformed
         // TODO add your handling code here:
-       tanqueController.iniciarSimulacion();
+      // tanqueController.iniciarSimulacion();
        
     }//GEN-LAST:event_botonIniciarActionPerformed
 
@@ -372,7 +382,7 @@ public class TanqueAgua extends javax.swing.JFrame {
 
     private void botonDetenerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonDetenerActionPerformed
         // TODO add your handling code here:
-        tanqueController.detenerSimulacion();
+        //tanqueController.detenerSimulacion();
     }//GEN-LAST:event_botonDetenerActionPerformed
 
     private void porcentajeValvulaCasaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_porcentajeValvulaCasaActionPerformed

@@ -9,17 +9,17 @@ package model;
  * @author maria
  */
 public class TransmisorNivel {
-    private double nivelAgua;
+    private double nivelActual;
 
     public TransmisorNivel() {
-        this.nivelAgua = 0.0;
+        this.nivelActual = 0.0;
     }
 
-    public double medirNivel() {
-        return this.nivelAgua;
+    public double obtenerNivelActual() {
+        return nivelActual;
     }
-
+    
     public void setNivelAgua(double nivelAgua) {
-        this.nivelAgua = nivelAgua;
+        this.nivelActual = nivelAgua;
     }
 }
