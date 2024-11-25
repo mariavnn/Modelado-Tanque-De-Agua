@@ -154,6 +154,7 @@ public class ControlLoop {
                         
                         System.out.println("LLENADO DEL TANQUE DESDE 0");
                         valvulaAbierta = true;
+                        actualizarValvula(); 
                         
                         llenarTanqueAutomatico(0, 100, "100"); //Llenar al 100%
                         
@@ -218,13 +219,14 @@ public class ControlLoop {
      
     //METODOS PARA EL MODO AUTOMATICO
     
-    private void llenarTanqueAutomatico(int inicio, int fin, String porcentaje) throws InterruptedException {
+    public void llenarTanqueAutomatico(int inicio, int fin, String porcentaje) throws InterruptedException {
         System.out.println("LLENAR TANQUE DESDE " + inicio + " HASTA " + fin);
         for (progresoTanque = inicio; progresoTanque <= fin; progresoTanque++) {
             if (!isRunning || !isAutomaticSelected) break;
 
             // Actualizar porcentaje de la válvula
             valvulaAbierta = true;
+            actualizarValvula();
             porcentajeValvula.setText( porcentaje + "%");
 
             // Actualizar interfaz gráfica
@@ -243,6 +245,7 @@ public class ControlLoop {
             
             porcentajeValvula.setText("40%"); //La valvula esta abierta a un 50%
             valvulaAbierta = false;
+            actualizarValvula();
             progresoTanque--; // Reducir el nivel del tanque
             
             System.out.println("PRIMER VACIADO DEL TANQUE");
@@ -261,6 +264,7 @@ public class ControlLoop {
         valvulaAbierta = true;
         valvulaModel.abrir(100); // Abrir la válvula completamente
         porcentajeValvula.setText("100%");
+        actualizarValvula();
     }
     
     //FUNCION PARA CERRAR LA VALVULA
@@ -269,6 +273,7 @@ public class ControlLoop {
         valvulaAbierta = false;
         valvulaModel.abrir(0); // Cerrar la válvula
         porcentajeValvula.setText("0%");
+        actualizarValvula();
     }
     
     
@@ -380,7 +385,11 @@ public class ControlLoop {
         txtPorcentaje.setText(String.format("%.1f m", nivelMetros));
 
 
-        // Actualizar color de la válvula dependiendo de su estado
+      
+    }
+    
+    public void actualizarValvula(){
+          // Actualizar color de la válvula dependiendo de su estado
         SwingUtilities.invokeLater(() -> {
             if (valvulaAbierta) {
                 ColorValvula.setBackground(Color.GREEN);
