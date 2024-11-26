@@ -4,6 +4,7 @@
  */
 package controller;
 
+import javax.swing.JTextField;
 import model.CajaSeguridad;
 import model.TransmisorNivel;
 
@@ -12,6 +13,9 @@ import model.TransmisorNivel;
  * @author Victoria
  */
 public class SecurityLoop {
+    private JTextField porcentajeValvula;
+    
+    private TanqueController tanqueController;
     private TransmisorNivel transmisorNivel;
     private CajaSeguridad cajaSeguridad;
     private ControlLoop controlLoop;
@@ -22,13 +26,25 @@ public class SecurityLoop {
     private boolean isRunning;
     private boolean valvulaSalida;
     private boolean valvulaEntrada;
+    private boolean isControlPaused = false;
+    private int progresoTanque;
     
-    public SecurityLoop(TransmisorNivel transmisorNivel, CajaSeguridad cajaSeguridad, ControlLoop controlLoop) {
+    public SecurityLoop(TransmisorNivel transmisorNivel, CajaSeguridad cajaSeguridad, ControlLoop controlLoop,
+                            JTextField porcentajeValvula
+    ) {
         this.transmisorNivel = transmisorNivel;
         this.cajaSeguridad = cajaSeguridad;
         this.controlLoop = controlLoop;
         this.isRunning = false;
+        
+        
     }
+
+    public void setIsRunning(boolean isRunning) {
+        this.isRunning = isRunning;
+    }
+    
+    
 
     public void iniciar() {
         isRunning = true;
@@ -37,27 +53,24 @@ public class SecurityLoop {
     }
 
     public void detener() {
-        isRunning = false;
+        if(isRunning){
+           isRunning = false;
+        }
         System.out.println("SecurityLoop detenido.");
     }
 
     private void monitorizarNivel() {
         System.out.println("Monitoreo del nivel en el sistema de seguridad ");
+        
         while (isRunning) {
             double nivelActual = transmisorNivel.obtenerNivelActual();
             System.out.println("Nivel actual " + nivelActual);
 
-            if (nivelActual < NIVEL_MINIMO) {
+            if (nivelActual <= NIVEL_MINIMO) {
                 cajaSeguridad.mostrarAlerta("Nivel critico bajo detectado");
-                
             } else if (nivelActual >= NIVEL_MAXIMO) {
-                cajaSeguridad.mostrarAlerta("Nivel crítico alto detectado: ");
-                controlLoop.detenerSimulacion();
-                
-                // Cerrar la válvula de entrada y abrir las de salida
-                cerrarValvulaEntrada();
-                abrirValvulasSalida();
-             
+                cajaSeguridad.mostrarAlerta("Nivel crítico alto detectado: ");             
+                manejarEmergencia();                                      
             }else{
                 cajaSeguridad.mostrarAlerta("El tanque esta funcionando bien!");
             }
@@ -71,33 +84,126 @@ public class SecurityLoop {
         }
     }
     
+    private void manejarEmergencia() {
+        System.out.println("Manejando emergencia...");
+
+        // Detener el lazo de control
+        controlLoop.detenerSimulacion();
+
+        // Iniciar el manejo de emergencia
+        new Thread(() -> {
+            try {
+                while (isRunning) {
+                    double nivelActual = transmisorNivel.obtenerNivelActual();
+
+                    if (nivelActual <= NIVEL_MINIMO) {
+                        System.out.println("Nivel crítico bajo. Llenando tanque...");
+                        
+                        if(controlLoop.isIsAutomaticSelected()) {
+                            abrirValvulaEntrada();
+                            llenarTanque();
+                        } else if(controlLoop.isIsManualSelected()) {
+                            System.out.println("xd ESPERATEEEE");
+                        } else {
+                            break;
+                        }
+                        
+                    } else if (nivelActual >= NIVEL_MAXIMO) {
+                        System.out.println("Nivel crítico alto. Vaciando tanque...");
+                           if(controlLoop.isIsAutomaticSelected()){
+                               cerrarValvulaEntrada();
+                               vaciarTanque();
+                            }else if(controlLoop.isIsManualSelected()){
+                               //EMPEZAR A VACIAR TANQUE HASTA QUE SE ABRA LA VALVULA DE ENTRADA
+                               progresoTanque = controlLoop.getProgresoTanque();
+                               System.out.println("PROGRESO TANQUE 1 "+ progresoTanque);
+                               controlLoop.vaciarTanqueManual();
+                               System.out.println("PROGRESO TANQUE 2 "+ progresoTanque);
+                            }else{
+                               break;
+                            }
+                         
+                        
+                    } else {
+                        System.out.println("Nivel estabilizado. Deteniendo manejo de emergencia...");
+                        System.out.println("IS RUNNING PROCESO SECURITY LOOP " + isRunning);
+                        
+                        System.out.println("IS RUNNING PROCESO SECURITY LOOP 2 " + isRunning);
+                        controlLoop.reanudarSimulacion();
+                        controlLoop.setProgresoTanque(progresoTanque);
+                        
+                        System.out.println("IS AUTOMATICO SELECTED " + controlLoop.isIsAutomaticSelected());
+                        System.out.println("IS MANUAL SELECTED " + controlLoop.isIsManualSelected());
+                        if(controlLoop.isIsAutomaticSelected()){
+                           controlLoop.modoAutomatico();
+                        }else if(controlLoop.isIsManualSelected()){
+                           
+                        }else{
+                            break;
+                        }
+                        
+                    }
+                    Thread.sleep(500); // Simulación de espera
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                System.err.println("Manejo de emergencia interrumpido.");
+            }
+        }).start();
+    }
+
+     private void abrirValvulaEntrada() {
+        System.out.println("Abriendo válvula de entrada...");
+        controlLoop.abrirValvula();
+        valvulaEntrada = controlLoop.isValvulaAbierta();
+    }
+    
     private void cerrarValvulaEntrada() {
         // Suponiendo que tienes acceso a la lógica de control de la válvula de entrada
         System.out.println("Cerrando válvula de entrada...");
         controlLoop.cerrarValvula();
         valvulaEntrada = controlLoop.isValvulaAbierta();
         System.out.println("VALVULA ENTRADA CERRADA " + valvulaEntrada);
-        try{
-           if (!valvulaEntrada) {
-            // Iniciar el proceso de vaciar el tanque
-            System.out.println("Iniciando vaciado...");
-            controlLoop.vaciarTanque(); // Usar la función para vaciar el tanque
-            
-            // Continuar el vaciado hasta que llegue a un nivel de 60
-            while (controlLoop.getProgresoTanque() > 60) {
-                System.out.println("Vaciando tanque... Nivel actual: " + controlLoop.getProgresoTanque());
-                Thread.sleep(100); // Ajusta el tiempo según el flujo de vaciado
-            }
-            
-            // Una vez que el tanque llegue a 60, volver a llenar
-            System.out.println("Nivel del tanque en 60%. Volviendo a llenar...");
-            controlLoop.llenarTanqueAutomatico(60, 80, "60"); // Llenar de 60 a 80
-        }
-        }catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-       
         // Implementa la lógica específica para cerrar la válvula de entrada aquí
+    }
+    
+    private void vaciarTanque() throws InterruptedException {
+        System.out.println("INICIO DEL VACIADO DEL TANQUE SECURITY LOOP ");
+        progresoTanque = controlLoop.getProgresoTanque();
+        System.out.println("PROGRESO TANQUE VACIADO " + progresoTanque);
+        while (isRunning && progresoTanque > 60) {
+            if (!isRunning ) break;
+            
+            controlLoop.actualizarValvula();
+            controlLoop.actualizarCasa();
+            System.out.println("PROGRESO TANQUE VACIADO " + progresoTanque);
+            //porcentajeValvula.setText("40%"); //La valvula esta abierta a un 50%
+            valvulaEntrada = false;
+            controlLoop.actualizarValvula();
+            progresoTanque--; // Reducir el nivel del tanque
+            
+            //System.out.println("PRIMER VACIADO DEL TANQUE");
+            controlLoop.actualizarTanque(progresoTanque); // Actualizar la interfaz gráfica
+            Thread.sleep(100); // Esperar un momento para simular el flujo
+        }
+    }
+
+    private void llenarTanque() throws InterruptedException {
+        System.out.println("INICIO DEL LLENADO DEL TANQUE SECURITY LOOP ");
+        progresoTanque = controlLoop.getProgresoTanque();
+        while (isRunning && progresoTanque < 90) {
+            if (!isRunning ) break;
+            
+            controlLoop.actualizarCasa();
+            System.out.println("PROGRESO TANQUE LLENADO " + progresoTanque);
+
+            valvulaEntrada = true;
+            controlLoop.actualizarValvula();
+            progresoTanque++; // Aumentar el nivel del tanque
+            
+            controlLoop.actualizarTanque(progresoTanque); // Actualizar la interfaz gráfica
+            Thread.sleep(100); // Esperar un momento para simular el flujo
+        }
     }
 
     private void abrirValvulasSalida() {
@@ -105,4 +211,6 @@ public class SecurityLoop {
         System.out.println("Abriendo válvulas de salida...");
         // Implementa la lógica específica para abrir las válvulas de salida aquí
     }
+    
+    
 }

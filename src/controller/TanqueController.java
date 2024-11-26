@@ -41,6 +41,7 @@ public class TanqueController {
    
     private int progresoTanque = 0;
     
+    
     //INSTANCIA DE CLASES 
     private ControlNivel controlNivel;
     private TransmisorNivel transmisorNivel;
@@ -132,7 +133,7 @@ public class TanqueController {
     }
     
     public void detenerSimulacion() {
-        progresoTanque = controlLoop.getProgresoTanque();
+        progresoTanque = 0;
         System.out.println("PROGRESO TANQUE DETENER SIMULACION " + progresoTanque);
         controlLoop.actualizarTanque(progresoTanque);
         
@@ -141,15 +142,19 @@ public class TanqueController {
         controlLoop.setVaciandoTanque(false); // Detener cualquier proceso de vaciado en curso
         controlLoop.setValvulaAbierta(false);  // Cerrar la válvula para evitar llenado
         
+        securityLoop.setIsRunning(false); //Detener cualquier proceso del security Loop
+        
         porcentajeValvulaCasa.setText("0%");
         porcentajeValvula.setText("0%");
         ColorValvulaCasa.setBackground(Color.RED);
+        ColorValvula.setBackground(Color.RED);
         ColorValvula2.setBackground(Color.RED);
         ColorValvulaCasa2.setBackground(Color.RED);
         
         TuberiaEntrada1.setValue(0);
         TuberiaEntrada2.setValue(0);
         TuberiaSalida1.setValue(0);
+        TuberiaSalida2.setValue(0);
         
         
         modoAutomatico.setEnabled(true);
