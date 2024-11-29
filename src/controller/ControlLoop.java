@@ -342,6 +342,7 @@ public class ControlLoop {
         valvulaModel.abrir(100); // Abrir la válvula completamente
         porcentajeValvula.setText("100%");
         actualizarValvula();
+        setValvulaAbierta(true);
     }
     
     //FUNCION PARA CERRAR LA VALVULA
@@ -351,7 +352,7 @@ public class ControlLoop {
         valvulaModel.abrir(0); // Cerrar la válvula
         porcentajeValvula.setText("0%");
         actualizarValvula();
-       
+        setValvulaAbierta(false);
     }
     
     
@@ -383,6 +384,8 @@ public class ControlLoop {
                 
                 // Aumentar el progreso del tanque 
                 abrirValvula();
+                TuberiaEntrada1.setValue(100);
+                TuberiaEntrada2.setValue(100);
                 System.out.println("LLENAR TANQUE MANUALMENTE: Progreso = " + progresoTanque);
                 progresoTanque++;
 
@@ -435,6 +438,8 @@ public class ControlLoop {
             while (!valvulaAbierta && progresoTanque > 0 && vaciandoTanque) {
                 // Reducir el progreso del tanque
                 cerrarValvula();//La valvula se encuentra cerrada a un 0%
+                TuberiaEntrada1.setValue(0);
+                TuberiaEntrada2.setValue(0);
                 progresoTanque--;
                 System.out.println("VACIAR TANQUE MANUALMENTE: Progreso = " + progresoTanque);
 
